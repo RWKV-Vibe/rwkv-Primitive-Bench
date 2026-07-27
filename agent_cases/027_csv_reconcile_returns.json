@@ -1,0 +1,34 @@
+{
+  "name": "csv_reconcile_returns",
+  "title": "CSV Reconcile Returns",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "read_file orders.csv and refunds.csv. Compute with run_lua using FILES['orders.csv'] and FILES['refunds.csv'] (there is no global orders table). For every order data row: totals[sku] += qty * unit_price. For every refund row: totals[sku] -= amount. Submit only the SKU with the largest net as 'SKU-XX N.NN'.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "orders.csv": [
+        "sku,qty,unit_price",
+        "SKU-17,3,250.00",
+        "SKU-42,4,180.00",
+        "SKU-17,2,299.50",
+        "SKU-09,10,49.95",
+        "SKU-42,1,180.00"
+      ],
+      "refunds.csv": [
+        "sku,amount",
+        "SKU-17,100.50",
+        "SKU-42,180.00",
+        "SKU-09,49.95"
+      ]
+    },
+    "expected_submit": "SKU-17 1248.50",
+    "required_tools": [
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

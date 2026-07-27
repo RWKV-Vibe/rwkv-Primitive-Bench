@@ -1,0 +1,16 @@
+{
+  "name": "missing_file_recover",
+  "title": "Recover Missing Filename",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "The answer is in config.yaml, but the filename may be slightly different. Use list_files, read_file with path=..., then submit the token value.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {"config.yml": ["token: COBALT-7"], "README.md": ["config is yml"]},
+    "expected_submit": "COBALT-7",
+    "required_tools": ["list_files", "read_file", "submit"]
+  },
+  "evaluation": "submit",
+  "max_turns": 10
+}

@@ -1,0 +1,31 @@
+{
+  "name": "jsonl_event_aggregate",
+  "title": "JSONL Event Aggregate",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "read_file events.jsonl (required). Count EVERY line where event=checkout and status=success (including the last line). orders=that count, users=count of unique users among those rows (not a list), revenue=sum amount to 2 decimals. Submit 'orders=N users=N revenue=N.NN'.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "events.jsonl": [
+        "{\"event\":\"checkout\",\"status\":\"success\",\"user\":\"u1\",\"amount\":49.99}",
+        "{\"event\":\"checkout\",\"status\":\"failed\",\"user\":\"u2\",\"amount\":19.99}",
+        "{\"event\":\"view\",\"status\":\"success\",\"user\":\"u3\",\"amount\":0}",
+        "{\"event\":\"checkout\",\"status\":\"success\",\"user\":\"u2\",\"amount\":80.00}",
+        "{\"event\":\"checkout\",\"status\":\"success\",\"user\":\"u1\",\"amount\":12.50}",
+        "{\"event\":\"checkout\",\"status\":\"success\",\"user\":\"u3\",\"amount\":100.25}",
+        "{\"event\":\"refund\",\"status\":\"success\",\"user\":\"u3\",\"amount\":25.00}",
+        "{\"event\":\"checkout\",\"status\":\"success\",\"user\":\"u4\",\"amount\":63.00}",
+        "{\"event\":\"checkout\",\"status\":\"success\",\"user\":\"u5\",\"amount\":132.98}"
+      ]
+    },
+    "expected_submit": "orders=6 users=5 revenue=438.72",
+    "required_tools": [
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

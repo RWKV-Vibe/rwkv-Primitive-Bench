@@ -1,0 +1,16 @@
+{
+  "name": "json_extract",
+  "title": "JSON Nested Extract",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "read_file payload.json, then call submit with the nested value at meta.ticket.id.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {"payload.json": ["{\"meta\": {\"ticket\": {\"id\": \"TCK-204\"}}}"]},
+    "expected_submit": "TCK-204",
+    "required_tools": ["read_file", "submit"]
+  },
+  "evaluation": "submit",
+  "max_turns": 8
+}

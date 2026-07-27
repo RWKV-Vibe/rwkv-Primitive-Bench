@@ -1,0 +1,18 @@
+{
+  "name": "two_step_program_output",
+  "title": "Two Step Program Output",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Relative paths only (no /home). The files already exist and are executable. Call run_file path=make_token.py, then run_file path=use_token.py, then submit exactly the full stdout line from use_token.py (including any FINAL= prefix).",
+  "tools": "run_file_submit",
+  "environment": {
+    "kind": "emulated",
+    "files": {"make_token.py": ["# writes token"], "use_token.py": ["# uses token"]},
+    "modes": {"make_token.py": "rwx", "use_token.py": "rwx"},
+    "expected_submit": "FINAL=RIVER-42-OK",
+    "required_tools": ["run_file", "submit"],
+    "scenario": "two_step_program_output"
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

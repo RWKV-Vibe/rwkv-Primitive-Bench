@@ -1,0 +1,11 @@
+{
+  "name": "arithmetic",
+  "title": "Arithmetic Tool Smoke Test",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Call multiply exactly once with a=4827 and b=391. After the Function output, reply with only the product digits (no more tool calls).",
+  "tools": "multiply",
+  "environment": {"kind": "emulated", "files": {}},
+  "evaluation": "arithmetic",
+  "max_turns": 6
+}

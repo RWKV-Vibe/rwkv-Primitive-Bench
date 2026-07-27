@@ -1,0 +1,27 @@
+{
+  "name": "awk_tabs_justify",
+  "title": "Tabs To Aligned Columns",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "write_file align.awk with content as a JSON array of lines: [\"BEGIN { FS=\\\"\\\\t\\\" }\", \"{ printf \\\"%-6s %2s %5s\\\\n\\\", $1, $2, $3 }\"]. Then run_awk script_path=align.awk input_path=data.tsv and submit exactly that stdout (do not invent output with run_lua).",
+  "tools": "awk",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "data.tsv": [
+        "name\tqty\tprice",
+        "apple\t3\t1.20",
+        "pear\t12\t0.75"
+      ]
+    },
+    "expected_submit": "name   qty price\napple   3  1.20\npear   12  0.75",
+    "required_tools": [
+      "write_file",
+      "run_awk",
+      "submit"
+    ],
+    "scenario": "awk_tabs_justify"
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

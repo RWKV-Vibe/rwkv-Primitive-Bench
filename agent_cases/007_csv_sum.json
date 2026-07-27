@@ -1,0 +1,26 @@
+{
+  "name": "csv_sum",
+  "title": "CSV Column Sum",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Call read_file on sales.csv. Sum every qty value in the data rows. Prefer run_lua: local t=0; for q in FILES['sales.csv']:gmatch(',(%d+)') do t=t+tonumber(q) end; print(t). Then submit only that printed number.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "sales.csv": [
+        "item,qty",
+        "apple,5",
+        "pear,12",
+        "plum,25"
+      ]
+    },
+    "expected_submit": "42",
+    "required_tools": [
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 8
+}

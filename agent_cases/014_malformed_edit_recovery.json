@@ -1,0 +1,17 @@
+{
+  "name": "malformed_edit_recovery",
+  "title": "Recover From Bad Edit Target",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Set the color setting to green. Use list_files first to identify whether the target is settings.conf or settings.txt, read it, update the existing file, and submit green when done.",
+  "tools": "write",
+  "environment": {
+    "kind": "emulated",
+    "files": {"settings.txt": ["color=red"]},
+    "expected_submit": "green",
+    "required_tools": ["list_files", "read_file", "write_file", "submit"],
+    "scenario": "malformed_edit_recovery"
+  },
+  "evaluation": "file_changed_submit",
+  "max_turns": 14
+}

@@ -1,0 +1,36 @@
+{
+  "name": "config_precedence_resolve",
+  "title": "Resolve Config Precedence",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "read_file config/defaults.env, config/prod.env, config/local.env, docs/precedence.md. Merge with local > prod > defaults. Submit exactly 'API_TIMEOUT=N RETRIES=N FEATURE_X=value' (only those three keys).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "config/defaults.env": [
+        "API_TIMEOUT=30",
+        "RETRIES=2",
+        "FEATURE_X=false",
+        "REGION=us"
+      ],
+      "config/prod.env": [
+        "RETRIES=3",
+        "FEATURE_X=true"
+      ],
+      "config/local.env": [
+        "API_TIMEOUT=45"
+      ],
+      "docs/precedence.md": [
+        "For this service, local overrides prod, and prod overrides defaults."
+      ]
+    },
+    "expected_submit": "API_TIMEOUT=45 RETRIES=3 FEATURE_X=true",
+    "required_tools": [
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

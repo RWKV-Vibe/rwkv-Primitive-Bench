@@ -1,0 +1,47 @@
+{
+  "name": "code_patch_edge_case",
+  "title": "Code Patch Edge Case",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "read_file parser.py and test_parser.py first. Fix parse_date: text=text.strip(); try datetime.strptime with %Y-%m-%d then %Y/%m/%d (catch ValueError). write_file parser.py only, run_tests until PASS, submit 'tests passed'.",
+  "tools": "write",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "parser.py": [
+        "from datetime import datetime",
+        "",
+        "",
+        "def parse_date(text):",
+        "    return datetime.strptime(text, \"%Y-%m-%d\").date().isoformat()"
+      ],
+      "test_parser.py": [
+        "from parser import parse_date",
+        "",
+        "",
+        "def test_iso_date():",
+        "    assert parse_date(\"2026-07-05\") == \"2026-07-05\"",
+        "",
+        "",
+        "def test_slash_date_with_spaces():",
+        "    assert parse_date(\" 2026/07/05 \") == \"2026-07-05\"",
+        "",
+        "",
+        "if __name__ == \"__main__\":",
+        "    test_iso_date()",
+        "    test_slash_date_with_spaces()",
+        "    print(\"PASS\")"
+      ]
+    },
+    "expected_submit": "tests passed",
+    "required_tools": [
+      "read_file",
+      "write_file",
+      "run_tests",
+      "submit"
+    ],
+    "scenario": "date_parser_patch"
+  },
+  "evaluation": "submit_after_tests",
+  "max_turns": 18
+}

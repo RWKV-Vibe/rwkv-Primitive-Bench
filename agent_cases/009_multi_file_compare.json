@@ -1,0 +1,16 @@
+{
+  "name": "multi_file_compare",
+  "title": "Compare Two Files",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "read_file old.txt and new.txt. Find the first differing line (1-based). Submit exactly 'line N: <old_text> -> <new_text>' using the real text from those lines (not the words old/new).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {"old.txt": ["alpha", "beta", "gamma"], "new.txt": ["alpha", "beta!", "gamma"]},
+    "expected_submit": "line 2: beta -> beta!",
+    "required_tools": ["read_file", "submit"]
+  },
+  "evaluation": "line_change_submit",
+  "max_turns": 10
+}

@@ -1,0 +1,29 @@
+{
+  "name": "read_only_repo_explain",
+  "title": "Read Only Repo Explain",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Explore this tiny repo without writing files. Call submit with one sentence that literally contains all three substrings: src/run.rs AND run_task AND build_request.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "src/run.rs": [
+        "pub fn run_task(task: &str) { let req = build_request(task); send(req); }"
+      ],
+      "src/client.rs": [
+        "pub fn build_request(task: &str) -> String { task.to_string() }"
+      ],
+      "README.md": [
+        "runner"
+      ]
+    },
+    "required_tools": [
+      "read_file",
+      "submit"
+    ],
+    "scenario": "read_only_repo_explain"
+  },
+  "evaluation": "repo_explain",
+  "max_turns": 12
+}
