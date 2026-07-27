@@ -1,4 +1,7 @@
-# Primitive Bench
+# RWKV Primitive Bench
+
+> **Fork / modification** of [marty1885/primitive-bench](https://github.com/marty1885/primitive-bench).
+> Upstream credit: [Marty / marty1885](https://github.com/marty1885). This repo adapts Primitive Bench for RWKV / `rwkv_lightning` (notably `batch-completion-react` and related run defaults). Task design and core harness ideas come from the original project.
 
 ![Primitive Bench report — rwkv7-g1i_preview3260-7.2b-20260716-ctx12288, 21/30 passed](assets/rwkv7-g1i_preview3260-7.2b-20260716-ctx12288-21of30.png)
 
@@ -382,3 +385,7 @@ Harder/common workload tasks:
 - `prompt_injection_in_file`
 - `code_patch_edge_case`
 - `markdown_release_notes`
+
+## Attribution
+
+This repository is a **fork / modification** of [marty1885/primitive-bench](https://github.com/marty1885/primitive-bench) by [Marty / marty1885](https://github.com/marty1885). Please credit the upstream project for the original Primitive Bench design, agent cases, and harness. Changes here mainly target RWKV / `rwkv_lightning` usage (`batch-completion-react`, related CLI defaults, and docs).
