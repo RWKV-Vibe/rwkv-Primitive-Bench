@@ -1,5 +1,9 @@
 # Primitive Bench
 
+![Primitive Bench report — rwkv7-g1i_preview3260-7.2b-20260716-ctx12288, 21/30 passed](https://github.com/xun082/md/raw/main/Snipaste_2026-07-27_15-55-22.png)
+
+`rwkv7-g1i_preview3260-7.2b-20260716-ctx12288` on the default suite: **21/30**. Screenshot of the HTML report.
+
 Primitive (Primitive Agent) Bench is a small, _vibe coded_, dependency-light benchmark for tool-using models. It targets models between the pure text predictor and being an agent. It tried to weed out failure modes: calling the wrong tool, forgetting to submit, misreading files, claiming tests passed, getting distracted by irrelevant tools, and making arithmetic or reconciliation mistakes.
 
 The benchmark is intentionally plain Python standard library code with static HTML reports.
