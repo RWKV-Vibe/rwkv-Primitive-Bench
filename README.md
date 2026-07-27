@@ -1,6 +1,6 @@
 # Primitive Bench
 
-![Primitive Bench report — rwkv7-g1i_preview3260-7.2b-20260716-ctx12288, 21/30 passed](https://github.com/xun082/md/raw/main/Snipaste_2026-07-27_15-55-22.png)
+![Primitive Bench report — rwkv7-g1i_preview3260-7.2b-20260716-ctx12288, 21/30 passed](assets/rwkv7-g1i_preview3260-7.2b-20260716-ctx12288-21of30.png)
 
 `rwkv7-g1i_preview3260-7.2b-20260716-ctx12288` on the default suite: **21/30**. Screenshot of the HTML report.
 
