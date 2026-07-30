@@ -210,7 +210,7 @@ Supported case sources inside the selected folder:
 
 Only use `--cases` with folders you trust. A `cases.py` plugin is normal Python code and is imported on demand only from the selected folder.
 
-Each case file supplies the prompt, tool set, model-visible files/data, expected submission or scoring rule, required/forbidden tools, and max turns.
+Each case file supplies the prompt, tool set, model-visible files/data, expected submission or scoring rule, required/forbidden tools, and max turns. Prompts are written as everyday agent goals; formulas, format conventions, and domain rules live in the fixture files rather than as tool-call recipes in the user message.
 
 Common fields:
 
@@ -220,7 +220,7 @@ Common fields:
   "title": "CSV Column Sum",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Read sales.csv, sum the qty column, and submit only the numeric total.",
+  "prompt": "Sum the qty column in sales.csv and submit only the total.",
   "tools": "nav",
   "environment": {
     "kind": "emulated",

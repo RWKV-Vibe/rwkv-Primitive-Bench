@@ -3,9 +3,11 @@
   "title": "Host Inventory",
   "mode": "open_probe",
   "system": "open_probe",
-  "prompt": "Use the tools to inspect the provided host/repo snapshot. The snapshot is exposed as an emulated filesystem, not the live host filesystem. There is no submit tool. When ready, answer directly and stop.\n\nLook around and tell me about the host you live on. Focus on OS, CPU/GPU, memory, disks, available runtimes, and constraints that matter for running local models or benchmarks. Be factual and say when something is unavailable or unknown.",
+  "prompt": "Use the tools to inspect the provided host/repo snapshot. The snapshot is exposed as an emulated filesystem, not the live host filesystem. There is no submit tool. When ready, answer directly and stop.\n\nWhat machine am I on? Cover OS, CPU/GPU, memory, disks, available runtimes, and anything that would matter for running local models or benchmarks. Be factual; say when something is unavailable or unknown.",
   "tools": "open_probe",
-  "environment": {"kind": "host_repo_snapshot"},
+  "environment": {
+    "kind": "host_repo_snapshot"
+  },
   "evaluation": "open_probe",
   "max_turns": 8
 }

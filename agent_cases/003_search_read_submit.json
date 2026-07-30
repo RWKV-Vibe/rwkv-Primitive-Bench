@@ -3,17 +3,26 @@
   "title": "Search Read And Submit",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Use the search tool to find SECRET_CODE in the emulated project, read the relevant file, and submit only the code value.",
+  "prompt": "There's a SECRET_CODE somewhere in this project. Find it and report only the code value.",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
     "files": {
-      "a.txt": ["alpha"],
-      "logs/run.log": ["SECRET_CODE=EMBER-91"],
-      "notes.txt": ["beta"]
+      "a.txt": [
+        "alpha"
+      ],
+      "logs/run.log": [
+        "SECRET_CODE=EMBER-91"
+      ],
+      "notes.txt": [
+        "beta"
+      ]
     },
     "expected_submit": "EMBER-91",
-    "required_tools": ["read_file", "submit"]
+    "required_tools": [
+      "read_file",
+      "submit"
+    ]
   },
   "evaluation": "submit",
   "max_turns": 10

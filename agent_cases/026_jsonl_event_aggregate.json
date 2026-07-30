@@ -3,7 +3,7 @@
   "title": "JSONL Event Aggregate",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "read_file events.jsonl (required). Count EVERY line where event=checkout and status=success (including the last line). orders=that count, users=count of unique users among those rows (not a list), revenue=sum amount to 2 decimals. Submit 'orders=N users=N revenue=N.NN'.",
+  "prompt": "Read events.jsonl (and README). Count checkout+success rows, distinct users, and amount sum. Report: orders=N users=N revenue=N.NN",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
@@ -18,6 +18,12 @@
         "{\"event\":\"refund\",\"status\":\"success\",\"user\":\"u3\",\"amount\":25.00}",
         "{\"event\":\"checkout\",\"status\":\"success\",\"user\":\"u4\",\"amount\":63.00}",
         "{\"event\":\"checkout\",\"status\":\"success\",\"user\":\"u5\",\"amount\":132.98}"
+      ],
+      "README.md": [
+        "A matching row looks like: \"event\":\"checkout\",\"status\":\"success\".",
+        "There are multiple matching rows — count all of them, including the last line.",
+        "Submit one line: orders=N users=N revenue=N.NN",
+        "run_lua example skeleton: local t=0; for line in FILES['events.jsonl']:gmatch('[^\\n]+') do ... end; print(...)"
       ]
     },
     "expected_submit": "orders=6 users=5 revenue=438.72",
@@ -27,5 +33,5 @@
     ]
   },
   "evaluation": "submit",
-  "max_turns": 12
+  "max_turns": 16
 }

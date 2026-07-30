@@ -3,9 +3,11 @@
   "title": "Actionable Improvement Review",
   "mode": "open_probe",
   "system": "open_probe",
-  "prompt": "Use the tools to inspect the provided host/repo snapshot. The snapshot is exposed as an emulated filesystem, not the live host filesystem. There is no submit tool. When ready, answer directly and stop.\n\nReview this repo as if you were about to open issues. Give the top actionable improvements, ordered by impact, with evidence from the repo and concrete next steps. Avoid generic advice.",
+  "prompt": "Use the tools to inspect the provided host/repo snapshot. The snapshot is exposed as an emulated filesystem, not the live host filesystem. There is no submit tool. When ready, answer directly and stop.\n\nReview this repo as if you're about to open issues. Give the top actionable improvements ordered by impact, with evidence from the repo and concrete next steps. Skip generic advice.",
   "tools": "open_probe",
-  "environment": {"kind": "host_repo_snapshot"},
+  "environment": {
+    "kind": "host_repo_snapshot"
+  },
   "evaluation": "open_probe",
   "max_turns": 8
 }

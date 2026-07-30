@@ -3,7 +3,7 @@
   "title": "EUR Trip Card Versus FX",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "read_file trip_budget.csv, bot_rates.tsv, card_terms.txt, rate_guide.md. gross = EUR_amount * EUR_spot_sell. EUR wallet net = gross * (1 - 0.005). CARD net = gross * (1 + 0.025). Cheaper = lower net; savings = |diff| with exactly two digits after the decimal point. Submit 'EUR by N.NN' or 'CARD by N.NN' via submit.",
+  "prompt": "I left trip_budget.csv, bot_rates.tsv, card_terms.txt, and rate_guide.md here. Which is cheaper for the EUR trip — wallet or card — and by how much?",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
@@ -23,10 +23,21 @@
         "EUR,2430"
       ],
       "rate_guide.md": [
-        "BOT spot_sell is used when the bank sells non-cash foreign currency to the customer. For this task, both options use EUR spot_sell before applying cashback or card fees."
+        "Use EUR spot_sell from bot_rates.tsv (column spot_sell on the EUR row).",
+        "gross = trip EUR amount * EUR spot_sell",
+        "EUR wallet net = gross * (1 - 0.005)",
+        "CARD net = gross * (1 + 0.025)",
+        "Pick the lower net; savings = abs difference with two decimals.",
+        "Submit: EUR by N.NN   or   CARD by N.NN",
+        "run_lua tip: local rates = FILES['bot_rates.tsv']; local budget = FILES['trip_budget.csv']"
       ],
       "card_terms.txt": [
-        "Foreign transaction fee: 2.5% of converted TWD purchase amount. EUR wallet cashback: 0.5%. TWD/USD card path cashback: none. Report the cheaper option by the difference between net costs."
+        "Trip amount is in trip_budget.csv (EUR).",
+        "Use EUR spot_sell from bot_rates.tsv (the EUR row, spot_sell column; value 36.845).",
+        "gross = EUR_amount * 36.845",
+        "EUR wallet net = gross * (1 - 0.005)",
+        "CARD net = gross * (1 + 0.025)",
+        "Report cheaper option: EUR by N.NN or CARD by N.NN"
       ]
     },
     "expected_submit": "EUR by 2686.00",
@@ -36,5 +47,5 @@
     ]
   },
   "evaluation": "submit",
-  "max_turns": 14
+  "max_turns": 16
 }

@@ -3,13 +3,22 @@
   "title": "Patch Config And Test",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "read_file path=app.conf, write_file path=app.conf with content 'mode = production', call run_tests (even if no test file is listed). After PASS, submit the answer string production (not PASS).",
+  "prompt": "app.conf is still on development. Flip mode to production, verify with the tests, and once they pass report just the word production.",
   "tools": "write",
   "environment": {
     "kind": "emulated",
-    "files": {"app.conf": ["mode = development"]},
+    "files": {
+      "app.conf": [
+        "mode = development"
+      ]
+    },
     "expected_submit": "production",
-    "required_tools": ["read_file", "write_file", "run_tests", "submit"],
+    "required_tools": [
+      "read_file",
+      "write_file",
+      "run_tests",
+      "submit"
+    ],
     "scenario": "patch_config"
   },
   "evaluation": "submit_after_tests",

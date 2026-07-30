@@ -3,7 +3,7 @@
   "title": "CSV Reconcile Returns",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "read_file orders.csv and refunds.csv. Compute with run_lua using FILES['orders.csv'] and FILES['refunds.csv'] (there is no global orders table). For every order data row: totals[sku] += qty * unit_price. For every refund row: totals[sku] -= amount. Submit only the SKU with the largest net as 'SKU-XX N.NN'.",
+  "prompt": "Reconcile orders.csv against refunds.csv. Which SKU has the largest net? Report like: SKU-42 99.50 (real numbers, no placeholders).",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
@@ -21,6 +21,11 @@
         "SKU-17,100.50",
         "SKU-42,180.00",
         "SKU-09,49.95"
+      ],
+      "README.md": [
+        "net(sku) = sum(qty*unit_price in orders) - sum(amount in refunds).",
+        "Use FILES['orders.csv'] / FILES['refunds.csv'] with gmatch. Lua has no string.split.",
+        "Submit the top sku and net, e.g. SKU-09 12.34 — never the placeholder text SKU-XX."
       ]
     },
     "expected_submit": "SKU-17 1248.50",
@@ -30,5 +35,5 @@
     ]
   },
   "evaluation": "submit",
-  "max_turns": 12
+  "max_turns": 16
 }

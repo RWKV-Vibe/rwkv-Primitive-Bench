@@ -3,13 +3,18 @@
   "title": "Line Of Credit Interest Estimate",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "read_file loan_terms.txt and balance_schedule.csv. APR = (prime + margin) / 100 as a decimal. For each CSV data row: interest = balance * APR * days / 365. Sum all months with run_lua using FILES['balance_schedule.csv']; print and submit the total rounded to 2 decimals.",
+  "prompt": "Compute total LOC interest for every row in balance_schedule.csv using loan_terms.txt. Report the summed interest rounded to 2 decimals (not a balance).",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
     "files": {
       "loan_terms.txt": [
-        "Line of credit APR = prime rate 6.45% + margin 1.75%. Use simple daily interest on a 365-day basis."
+        "prime_rate_percent = 6.45",
+        "margin_percent = 1.75",
+        "APR_decimal = (6.45 + 1.75) / 100   # = 0.082",
+        "Each month: interest = balance * APR_decimal * days / 365",
+        "Month 1 sanity check: 4500 * 0.082 * 30 / 365 ≈ 30.33",
+        "Sum months 1..8 and round to 2 decimals."
       ],
       "balance_schedule.csv": [
         "month,balance,days",
@@ -21,6 +26,10 @@
         "6,5100,30",
         "7,5100,30",
         "8,5100,30"
+      ],
+      "README.md": [
+        "In run_lua use FILES['balance_schedule.csv'] — io.open on disk paths will not see these files.",
+        "Skip the CSV header. Do not submit a balance like 5100."
       ]
     },
     "expected_submit": "289.13",
@@ -33,5 +42,5 @@
     "scorer": "numeric_submit_tolerance",
     "tolerance": 1.5
   },
-  "max_turns": 14
+  "max_turns": 18
 }

@@ -3,7 +3,7 @@
   "title": "Resolve Config Precedence",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "read_file config/defaults.env, config/prod.env, config/local.env, docs/precedence.md. Merge with local > prod > defaults. Submit exactly 'API_TIMEOUT=N RETRIES=N FEATURE_X=value' (only those three keys).",
+  "prompt": "Look under config/ and docs/. Merge layers with local > prod > defaults. Report API_TIMEOUT, RETRIES, and FEATURE_X on one single line as: API_TIMEOUT=N RETRIES=N FEATURE_X=value",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
@@ -22,7 +22,13 @@
         "API_TIMEOUT=45"
       ],
       "docs/precedence.md": [
-        "For this service, local overrides prod, and prod overrides defaults."
+        "local overrides prod, prod overrides defaults.",
+        "Emit the three keys on ONE line separated by spaces (no newlines):",
+        "API_TIMEOUT=N RETRIES=N FEATURE_X=value"
+      ],
+      "README.md": [
+        "Service config overlays live in config/; merge rules are in docs/precedence.md.",
+        "Report API_TIMEOUT, RETRIES, and FEATURE_X only."
       ]
     },
     "expected_submit": "API_TIMEOUT=45 RETRIES=3 FEATURE_X=true",

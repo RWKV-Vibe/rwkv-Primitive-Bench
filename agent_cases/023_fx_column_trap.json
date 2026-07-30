@@ -3,7 +3,7 @@
   "title": "BOT FX Column Trap",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "read_file bot_rates.tsv, rate_guide.md, orders.csv. Map: buy_cash→cash_sell, buy_spot→spot_sell, sell_cash→cash_buy, sell_spot→spot_buy. In run_lua use FILES['bot_rates.tsv'] and FILES['orders.csv'] only (no read_file() inside Lua). outflow = sum(buy*rate) - sum(sell*rate), round to 2 decimals, submit that number.",
+  "prompt": "Using orders.csv, bot_rates.tsv, and rate_guide.md, what is our net TWD outflow? Report the number rounded to two decimals.",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
@@ -19,7 +19,21 @@
         "THB\t0.8348\t1.0248\t0.9452\t0.9912"
       ],
       "rate_guide.md": [
-        "cash_buy: bank buys physical foreign cash from customer. cash_sell: bank sells physical foreign cash to customer. spot_buy: bank buys non-cash foreign currency from customer. spot_sell: bank sells non-cash foreign currency to customer."
+        "cash_buy: bank buys physical foreign cash from customer.",
+        "cash_sell: bank sells physical foreign cash to customer.",
+        "spot_buy: bank buys non-cash foreign currency from customer.",
+        "spot_sell: bank sells non-cash foreign currency to customer.",
+        "",
+        "Customer order → rate column:",
+        "buy_cash → cash_sell",
+        "buy_spot → spot_sell",
+        "sell_cash → cash_buy",
+        "sell_spot → spot_buy",
+        "",
+        "For each order: twd = amount * rate_for_mapped_column",
+        "outflow = sum(twd for buys) - sum(twd for sells), round to 2 decimals.",
+        "Mini-check: buy_spot EUR 800 uses EUR spot_sell.",
+        "For run_lua, read workspace files with FILES['filename'] (string), not io.open on disk paths. Print the final number/string."
       ],
       "orders.csv": [
         "action,currency,amount",
@@ -27,6 +41,11 @@
         "buy_spot,EUR,800",
         "sell_cash,USD,600",
         "sell_spot,GBP,300"
+      ],
+      "README.md": [
+        "Parse FILES['bot_rates.tsv'] and FILES['orders.csv']; do not hardcode a blank rates table.",
+        "buy_spot EUR 800 → multiply by EUR spot_sell.",
+        "outflow = buy_twds - sell_twds, two decimals."
       ]
     },
     "expected_submit": "28079.50",
@@ -36,5 +55,5 @@
     ]
   },
   "evaluation": "submit",
-  "max_turns": 14
+  "max_turns": 16
 }

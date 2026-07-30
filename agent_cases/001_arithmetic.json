@@ -3,9 +3,12 @@
   "title": "Arithmetic Tool Smoke Test",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Call multiply exactly once with a=4827 and b=391. After the Function output, reply with only the product digits (no more tool calls).",
+  "prompt": "What's 4827 times 391? Reply with only the product digits.",
   "tools": "multiply",
-  "environment": {"kind": "emulated", "files": {}},
+  "environment": {
+    "kind": "emulated",
+    "files": {}
+  },
   "evaluation": "arithmetic",
   "max_turns": 6
 }

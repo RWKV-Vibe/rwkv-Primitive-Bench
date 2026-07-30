@@ -3,8 +3,15 @@
   "title": "Invoice Code Repair",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Fix invoice.py: tax must be (subtotal - discount) * tax_rate; total must be (subtotal - discount) + tax + shipping. write_file the fix, run_tests until PASS, then stop tools and give a short plain-text summary. Do not invent tools.",
-  "tools": "file",
+  "prompt": "The invoice calculator is failing its unit tests. Read NOTES.md, fix invoice.py, and do not finish until the tests show PASS — then give a one-line summary of the fix.",
+  "tools": [
+    "list_files",
+    "read_file",
+    "write_file",
+    "search",
+    "run_tests",
+    "submit"
+  ],
   "environment": {
     "kind": "emulated",
     "files": {
@@ -45,9 +52,18 @@
         "if __name__ == \"__main__\":",
         "    test_sample_order()",
         "    print(\"PASS\")"
+      ],
+      "README.md": [
+        "Files: invoice.py and run_tests.py.",
+        "Finish only after PASS from the test runner, then a one-line summary."
+      ],
+      "NOTES.md": [
+        "Review: discount must shrink the taxable base before tax.",
+        "Preferred shape: discounted = subtotal - discount; tax = discounted * tax_rate; total = discounted + tax + shipping.",
+        "After editing, invoke the project's test runner (the run_tests function) until it prints PASS, then submit a short summary of the change."
       ]
     }
   },
   "evaluation": "invoice",
-  "max_turns": 24
+  "max_turns": 22
 }

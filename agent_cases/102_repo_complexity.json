@@ -3,9 +3,11 @@
   "title": "Repository Complexity Assessment",
   "mode": "open_probe",
   "system": "open_probe",
-  "prompt": "Use the tools to inspect the provided host/repo snapshot. The snapshot is exposed as an emulated filesystem, not the live host filesystem. There is no submit tool. When ready, answer directly and stop.\n\nGauge the complexity of this repo. Tell me what kind of project it is, main files, approximate size, architectural shape, risk areas, and how hard it would be for a new contributor to modify. Use evidence from the snapshot.",
+  "prompt": "Use the tools to inspect the provided host/repo snapshot. The snapshot is exposed as an emulated filesystem, not the live host filesystem. There is no submit tool. When ready, answer directly and stop.\n\nHow complex is this repo? Tell me what kind of project it is, the main files, approximate size, architectural shape, risk areas, and how hard it would be for a new contributor to modify. Back claims with paths you actually opened.",
   "tools": "open_probe",
-  "environment": {"kind": "host_repo_snapshot"},
+  "environment": {
+    "kind": "host_repo_snapshot"
+  },
   "evaluation": "open_probe",
   "max_turns": 8
 }

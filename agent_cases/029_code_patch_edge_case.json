@@ -3,7 +3,7 @@
   "title": "Code Patch Edge Case",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "read_file parser.py and test_parser.py first. Fix parse_date: text=text.strip(); try datetime.strptime with %Y-%m-%d then %Y/%m/%d (catch ValueError). write_file parser.py only, run_tests until PASS, submit 'tests passed'.",
+  "prompt": "parser.py is failing some dates in test_parser.py. Fix parser.py so the tests really pass (don't fake a pass), then report 'tests passed'.",
   "tools": "write",
   "environment": {
     "kind": "emulated",
@@ -31,6 +31,15 @@
         "    test_iso_date()",
         "    test_slash_date_with_spaces()",
         "    print(\"PASS\")"
+      ],
+      "README.md": [
+        "Edit ./parser.py only. Verify with the run_tests tool (not shell).",
+        "Tests cover ISO dates and slash dates with leading/trailing spaces."
+      ],
+      "NOTES.md": [
+        "parse_date must strip surrounding whitespace.",
+        "It must accept YYYY-MM-DD and also YYYY/MM/DD.",
+        "Keep returning an ISO date string (YYYY-MM-DD)."
       ]
     },
     "expected_submit": "tests passed",
@@ -43,5 +52,5 @@
     "scenario": "date_parser_patch"
   },
   "evaluation": "submit_after_tests",
-  "max_turns": 18
+  "max_turns": 22
 }

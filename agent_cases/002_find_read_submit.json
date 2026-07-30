@@ -3,17 +3,28 @@
   "title": "Find Obvious File And Submit",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Relative paths only. Call list_files path='.', read README.md if needed, then read_file the answer file it points to, and submit exactly that string (omit any leading N: prefix).",
+  "prompt": "There's an answer buried in this little project. Look around, follow whatever the README points to, and report just that answer string.",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
     "files": {
-      "README.md": ["Look in src/answer.txt."],
-      "src/answer.txt": ["BLUEBIRD"],
-      "notes/todo.txt": ["nothing"]
+      "README.md": [
+        "Look in src/answer.txt.",
+        "When you find the answer, submit only the bare token (no line-number prefix)."
+      ],
+      "src/answer.txt": [
+        "BLUEBIRD"
+      ],
+      "notes/todo.txt": [
+        "nothing"
+      ]
     },
     "expected_submit": "BLUEBIRD",
-    "required_tools": ["list_files", "read_file", "submit"]
+    "required_tools": [
+      "list_files",
+      "read_file",
+      "submit"
+    ]
   },
   "evaluation": "submit",
   "max_turns": 10

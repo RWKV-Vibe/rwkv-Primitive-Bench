@@ -3,7 +3,7 @@
   "title": "Log Incident Root Cause",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Use search and/or read_file on deploy.log, app.log, worker.log. After the 14:00:00Z deploy marker, find the earliest ERROR that has a request_id (ignore WARN and pre-deploy lines). Submit 'service CODE request_id'.",
+  "prompt": "Read deploy.log, app.log, and worker.log once each. After the deploy marker time, take the earliest ERROR that has request_id and report: <service> <CODE> <request_id>.",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
@@ -23,16 +23,17 @@
         "2026-07-05T14:04:20Z ERROR service=worker request_id=req-8843 code=E_QUEUE_FULL queue full"
       ],
       "README.md": [
-        "Incident review: use the first post-deploy ERROR with request_id as the root cause candidate."
+        "Earliest means smallest timestamp after the deploy marker.",
+        "Worker errors can be earlier than app errors — compare timestamps across files.",
+        "Submit: service CODE request_id"
       ]
     },
     "expected_submit": "worker E_DB_DEADLOCK req-8842",
     "required_tools": [
-      "search",
       "read_file",
       "submit"
     ]
   },
   "evaluation": "submit",
-  "max_turns": 14
+  "max_turns": 12
 }

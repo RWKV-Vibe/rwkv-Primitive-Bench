@@ -3,13 +3,27 @@
   "title": "Small Need With Distractor",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Relative paths only. Call list_files path='.', then read_file answer.short (not big.txt). Submit only the bare value with no line-number prefix (not '1: ...').",
+  "prompt": "List the files here. The real answer is in the short file — skip the big noisy one. Report only the bare answer token.",
   "tools": "nav",
   "environment": {
     "kind": "emulated",
-    "files": {"big.txt": {"repeat": {"text": "noise\n", "count": 120}}, "answer.short": ["SPARROW"]},
+    "files": {
+      "big.txt": {
+        "repeat": {
+          "text": "noise\n",
+          "count": 120
+        }
+      },
+      "answer.short": [
+        "SPARROW"
+      ]
+    },
     "expected_submit": "SPARROW",
-    "required_tools": ["list_files", "read_file", "submit"]
+    "required_tools": [
+      "list_files",
+      "read_file",
+      "submit"
+    ]
   },
   "evaluation": "submit",
   "max_turns": 10
