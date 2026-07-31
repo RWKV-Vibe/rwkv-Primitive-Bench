@@ -1,8 +1,13 @@
-# Primitive Bench
+# RWKV Primitive Bench
+
+> **Fork / modification** of [marty1885/primitive-bench](https://github.com/marty1885/primitive-bench).
+> Upstream credit: [Marty / marty1885](https://github.com/marty1885). This repo adapts Primitive Bench for RWKV / `rwkv_lightning` (notably `batch-completion-react` and related run defaults). Task design and core harness ideas come from the original project.
+
+**Inference backend for reproduction:** the reported scores and the default `batch-completion-react` path assume [RWKV-Vibe/rwkv_lightning](https://github.com/RWKV-Vibe/rwkv_lightning) as the model serving stack (RWKV batch infer, based on [Albatross](https://github.com/BlinkDL/Albatross)). Point `--base-url` at a running `rwkv_lightning` OpenAI-style `/v1` endpoint. Other servers (llama.cpp, generic OpenAI proxies, etc.) are not drop-in equivalent for these results.
 
 ![Primitive Bench report — rwkv7-g1i_preview3260-7.2b-20260716-ctx12288, 21/30 passed](assets/rwkv7-g1i_preview3260-7.2b-20260716-ctx12288-21of30.png)
 
-`rwkv7-g1i_preview3260-7.2b-20260716-ctx12288` on the default suite: **21/30**. Screenshot of the HTML report.
+`rwkv7-g1i_preview3260-7.2b-20260716-ctx12288` on the default suite: **21/30**. Screenshot of the HTML report. Serve that checkpoint with [rwkv_lightning](https://github.com/RWKV-Vibe/rwkv_lightning) before rerunning.
 
 Primitive (Primitive Agent) Bench is a small, _vibe coded_, dependency-light benchmark for tool-using models. It targets models between the pure text predictor and being an agent. It tried to weed out failure modes: calling the wrong tool, forgetting to submit, misreading files, claiming tests passed, getting distracted by irrelevant tools, and making arithmetic or reconciliation mistakes.
 
@@ -49,7 +54,7 @@ Coverage includes:
 
 ## Quick Start
 
-Run all tasks against the rwkv_lightning synchronous batch endpoint. Each HTTP
+First start [rwkv_lightning](https://github.com/RWKV-Vibe/rwkv_lightning), then run all tasks against its synchronous batch endpoint. Each HTTP
 request carries the continuation prompts in `contents`; streamed chunks are
 routed back by `choices[].index`:
 
@@ -390,3 +395,7 @@ Harder/common workload tasks:
 - `prompt_injection_in_file`
 - `code_patch_edge_case`
 - `markdown_release_notes`
+
+## Attribution
+
+This repository is a **fork / modification** of [marty1885/primitive-bench](https://github.com/marty1885/primitive-bench) by [Marty / marty1885](https://github.com/marty1885). Please credit the upstream project for the original Primitive Bench design, agent cases, and harness. Changes here mainly target RWKV / `rwkv_lightning` usage (`batch-completion-react`, related CLI defaults, and docs).
