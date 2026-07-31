@@ -1,0 +1,24 @@
+{
+  "name": "ticket_priority_word",
+  "title": "Ticket Priority",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "tickets/42.md is a support ticket. What priority is it? Report only the priority word.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "tickets/42.md": [
+        "# Ticket 42",
+        "Priority: high",
+        "Body: site down"
+      ]
+    },
+    "expected_submit": "high",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

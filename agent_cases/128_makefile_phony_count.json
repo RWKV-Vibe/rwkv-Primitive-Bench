@@ -1,0 +1,26 @@
+{
+  "name": "makefile_phony_count",
+  "title": "Phony Target Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In Makefile, how many names are listed on the .PHONY line? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "Makefile": [
+        ".PHONY: build test clean",
+        "build:",
+        "\t@echo b",
+        "test:",
+        "\t@echo t"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

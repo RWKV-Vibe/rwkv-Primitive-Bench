@@ -1,0 +1,30 @@
+{
+  "name": "csv_join_dept",
+  "title": "Employee Department",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "employees.csv and depts.csv share dept_id. What department name does employee E2 belong to? Final answer: the name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "employees.csv": [
+        "id,dept_id",
+        "E1,10",
+        "E2,20",
+        "E3,10"
+      ],
+      "depts.csv": [
+        "dept_id,name",
+        "10,Engineering",
+        "20,Finance"
+      ]
+    },
+    "expected_submit": "Finance",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

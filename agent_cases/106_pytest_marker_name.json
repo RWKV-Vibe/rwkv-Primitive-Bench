@@ -1,0 +1,26 @@
+{
+  "name": "pytest_marker_name",
+  "title": "Pytest Marker Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "pyproject.toml lists pytest markers. What is the first marker name before the colon? Final answer: that name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "pyproject.toml": [
+        "[tool.pytest.ini_options]",
+        "markers = [",
+        "  \"slow: long running tests\",",
+        "  \"net: needs network\",",
+        "]"
+      ]
+    },
+    "expected_submit": "slow",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

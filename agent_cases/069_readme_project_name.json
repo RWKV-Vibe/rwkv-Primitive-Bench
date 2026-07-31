@@ -1,0 +1,22 @@
+{
+  "name": "readme_project_name",
+  "title": "Copyright Year",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open LICENSE and report the four-digit copyright year. Final answer: the year only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "LICENSE": [
+        "Copyright 2019 Example Corp. All rights reserved."
+      ]
+    },
+    "expected_submit": "2019",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

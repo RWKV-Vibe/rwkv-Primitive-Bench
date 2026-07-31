@@ -1,0 +1,25 @@
+{
+  "name": "semver_patch_bump",
+  "title": "Patch Version Bump",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "version.txt is semver X.Y.Z. Report the version after bumping only the patch by 1.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "version.txt": [
+        "2.3.9"
+      ],
+      "README.md": [
+        "Bump patch: Z -> Z+1. 2.3.9 -> 2.3.10"
+      ]
+    },
+    "expected_submit": "2.3.10",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

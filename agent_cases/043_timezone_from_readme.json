@@ -1,0 +1,29 @@
+{
+  "name": "timezone_from_readme",
+  "title": "Deploy Timezone",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read docs/ops.md for the deploy timezone (not laptop timezone). Report only that timezone string.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "docs/ops.md": [
+        "# Ops",
+        "Deploy windows are always scheduled in UTC."
+      ],
+      "notes/laptop.txt": [
+        "My laptop uses Asia/Taipei."
+      ],
+      "README.md": [
+        "Deploy timezone comes from docs/ops.md only."
+      ]
+    },
+    "expected_submit": "UTC",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

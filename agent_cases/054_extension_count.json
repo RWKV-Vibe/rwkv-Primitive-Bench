@@ -1,0 +1,32 @@
+{
+  "name": "extension_count",
+  "title": "Count Empty Files",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Under the data/ directory, how many files are empty (zero bytes/content)? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "data/a.txt": [],
+      "data/b.txt": [
+        "x"
+      ],
+      "data/c.txt": [],
+      "data/d.txt": [
+        "yy"
+      ],
+      "README.md": [
+        "Empty means the file content has length 0."
+      ]
+    },
+    "expected_submit": "2",
+    "required_tools": [
+      "list_files",
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

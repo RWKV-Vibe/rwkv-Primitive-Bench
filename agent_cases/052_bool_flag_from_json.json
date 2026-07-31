@@ -1,0 +1,22 @@
+{
+  "name": "bool_flag_from_json",
+  "title": "Feature Flag Value",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "flags.json has feature toggles. Is dark_mode enabled? Report true or false.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "flags.json": [
+        "{\"dark_mode\": true, \"beta\": false}"
+      ]
+    },
+    "expected_submit": "true",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

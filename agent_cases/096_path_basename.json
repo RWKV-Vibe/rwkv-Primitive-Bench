@@ -1,0 +1,22 @@
+{
+  "name": "path_basename",
+  "title": "Path Basename",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "path.txt contains a path. Report only the basename (final component).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "path.txt": [
+        "/var/log/nginx/access.log"
+      ]
+    },
+    "expected_submit": "access.log",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

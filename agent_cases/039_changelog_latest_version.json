@@ -1,0 +1,37 @@
+{
+  "name": "changelog_latest_version",
+  "title": "Changelog Latest Version",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read CHANGELOG.md — what is the newest version heading? Report only that version (not package.json).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "CHANGELOG.md": [
+        "# Changelog",
+        "",
+        "## 1.4.2",
+        "- Bugfixes",
+        "",
+        "## 1.4.0",
+        "- Features",
+        "",
+        "## 1.3.9",
+        "- Older"
+      ],
+      "package.json": [
+        "{\"name\":\"demo\",\"version\":\"1.4.1\"}"
+      ],
+      "README.md": [
+        "Prefer CHANGELOG.md headings over package.json if they disagree."
+      ]
+    },
+    "expected_submit": "1.4.2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

@@ -1,0 +1,26 @@
+{
+  "name": "yaml_replicas",
+  "title": "Deployment Replicas",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open deploy.yaml. How many replicas are configured? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "deploy.yaml": [
+        "apiVersion: apps/v1",
+        "kind: Deployment",
+        "spec:",
+        "  replicas: 4",
+        "  selector: {}"
+      ]
+    },
+    "expected_submit": "4",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

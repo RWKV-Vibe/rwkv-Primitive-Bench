@@ -1,0 +1,25 @@
+{
+  "name": "ignore_schedule_get_pin",
+  "title": "PIN Ignore Schedule",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read pin.txt and report the PIN. Schedule tools are irrelevant — leave them alone.",
+  "tools": "nav_plus_schedule",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "pin.txt": [
+        "PIN=482910"
+      ]
+    },
+    "expected_submit": "482910",
+    "required_tools": [
+      "submit"
+    ],
+    "forbidden_tools": [
+      "list_schedules"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

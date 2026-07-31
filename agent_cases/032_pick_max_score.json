@@ -1,0 +1,22 @@
+{
+  "name": "pick_max_score",
+  "title": "Pick Highest Score",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open scores.json and tell me which player name has the highest score. Report only the name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "scores.json": [
+        "{\"players\":[{\"name\":\"Kim\",\"score\":12},{\"name\":\"Lee\",\"score\":27},{\"name\":\"Mo\",\"score\":19}]}"
+      ]
+    },
+    "expected_submit": "Lee",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

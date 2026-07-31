@@ -1,0 +1,25 @@
+{
+  "name": "hex_color_from_css",
+  "title": "Brand Hex Color",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What hex color is --brand set to in theme.css? Report including the #.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "theme.css": [
+        ":root {",
+        "  --brand: #0A7A3E;",
+        "  --bg: #fff;",
+        "}"
+      ]
+    },
+    "expected_submit": "#0A7A3E",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

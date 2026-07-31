@@ -1,0 +1,27 @@
+{
+  "name": "csv_unique_cities",
+  "title": "Most Visited City",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Which city appears most often in visits.csv? Final answer: the city name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "visits.csv": [
+        "user,city",
+        "u1,Paris",
+        "u2,Paris",
+        "u3,Rome",
+        "u4,Paris",
+        "u5,Rome"
+      ]
+    },
+    "expected_submit": "Paris",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

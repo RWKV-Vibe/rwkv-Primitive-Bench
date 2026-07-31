@@ -1,0 +1,26 @@
+{
+  "name": "max_latency_service",
+  "title": "Fastest Service Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In latencies.tsv, which service has the smallest ms value? Final answer: the service name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "latencies.tsv": [
+        "service\tms",
+        "auth\t120",
+        "billing\t240",
+        "search\t90",
+        "cdn\t200"
+      ]
+    },
+    "expected_submit": "search",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 16
+}

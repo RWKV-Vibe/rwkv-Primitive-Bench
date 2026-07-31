@@ -1,0 +1,29 @@
+{
+  "name": "latest_ok_build",
+  "title": "First Fail After Success",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In builds.log, what is the first FAIL build id that appears after at least one OK? Final answer: that build id only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "builds.log": [
+        "build=10 status=FAIL",
+        "build=11 status=OK",
+        "build=12 status=OK",
+        "build=13 status=FAIL",
+        "build=14 status=FAIL"
+      ],
+      "README.md": [
+        "After seeing an OK, the next FAIL is build 13."
+      ]
+    },
+    "expected_submit": "13",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

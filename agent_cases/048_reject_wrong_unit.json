@@ -1,0 +1,26 @@
+{
+  "name": "reject_wrong_unit",
+  "title": "Celsius To Fahrenheit",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "temp.txt stores a Celsius reading. Report the Fahrenheit equivalent as a whole number.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "temp.txt": [
+        "C=20"
+      ],
+      "README.md": [
+        "Conversion: F = C * 9/5 + 32.",
+        "Round to the nearest integer. 20C -> 68F"
+      ]
+    },
+    "expected_submit": "68",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

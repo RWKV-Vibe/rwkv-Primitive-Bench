@@ -1,0 +1,25 @@
+{
+  "name": "unicode_nfc_length",
+  "title": "Token Character Length",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "token.txt contains one word. How many Unicode code points does it have after trimming? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "token.txt": [
+        "  café  "
+      ],
+      "README.md": [
+        "Trim spaces; café has 4 code points."
+      ]
+    },
+    "expected_submit": "4",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

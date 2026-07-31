@@ -1,0 +1,25 @@
+{
+  "name": "customer_email_by_id",
+  "title": "Customer Email",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Look up customer C-7 and report their email only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "customers.csv": [
+        "id,email,name",
+        "C-3,a@x.com,Ann",
+        "C-7,b@y.com,Bo",
+        "C-9,c@z.com,Cy"
+      ]
+    },
+    "expected_submit": "b@y.com",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

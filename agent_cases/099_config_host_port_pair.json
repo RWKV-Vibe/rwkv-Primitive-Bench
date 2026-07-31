@@ -1,0 +1,25 @@
+{
+  "name": "config_host_port_pair",
+  "title": "Who Listens On Port",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "ss.txt is a listening-socket snapshot. Which process name owns port 5432? Final answer: the process name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "ss.txt": [
+        "State Recv-Q Send-Q Local Address:Port Peer Process",
+        "LISTEN 0 128 0.0.0.0:22 users:((\"sshd\",pid=1))",
+        "LISTEN 0 128 127.0.0.1:5432 users:((\"postgres\",pid=9))",
+        "LISTEN 0 128 0.0.0.0:80 users:((\"nginx\",pid=3))"
+      ]
+    },
+    "expected_submit": "postgres",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

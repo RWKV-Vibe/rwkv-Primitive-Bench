@@ -1,0 +1,27 @@
+{
+  "name": "dockerfile_base_image",
+  "title": "Exposed Container Port",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read the Dockerfile. What port does EXPOSE declare? Final answer: the port number only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "Dockerfile": [
+        "FROM alpine:3.19",
+        "EXPOSE 8088",
+        "CMD [\"sleep\",\"infinity\"]"
+      ],
+      "README.md": [
+        "Answer with the EXPOSE port number."
+      ]
+    },
+    "expected_submit": "8088",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 16
+}

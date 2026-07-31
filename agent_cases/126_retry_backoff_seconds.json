@@ -1,0 +1,25 @@
+{
+  "name": "retry_backoff_seconds",
+  "title": "Retry Backoff Seconds",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "policy.json has base_seconds and factor. For attempt 3, wait = base_seconds * factor^(attempt-1). Final answer: integer seconds.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "policy.json": [
+        "{\"base_seconds\": 2, \"factor\": 3}"
+      ],
+      "README.md": [
+        "attempt 3 => 2 * 3^2 = 18"
+      ]
+    },
+    "expected_submit": "18",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

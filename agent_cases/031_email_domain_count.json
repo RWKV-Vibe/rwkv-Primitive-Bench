@@ -1,0 +1,32 @@
+{
+  "name": "email_domain_count",
+  "title": "Count Acme Emails",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "From contacts.csv, how many email addresses are on the acme.com domain? Report only the number.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "contacts.csv": [
+        "name,email",
+        "Ada,ada@acme.com",
+        "Bo,bo@other.org",
+        "Cara,cara@acme.com",
+        "Dan,dan@ACME.com",
+        "Eve,eve@example.com"
+      ],
+      "README.md": [
+        "Count rows whose email domain is acme.com (case-insensitive).",
+        "Report only the integer count."
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

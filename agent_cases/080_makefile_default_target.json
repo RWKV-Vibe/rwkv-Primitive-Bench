@@ -1,0 +1,29 @@
+{
+  "name": "makefile_default_target",
+  "title": "Test Recipe Command",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In the Makefile, what program does the test target run first? Final answer: the program name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "Makefile": [
+        "all: build",
+        "build:",
+        "\t@echo build",
+        "test:",
+        "\tpytest -q",
+        "\t@echo done",
+        "lint:",
+        "\truff check ."
+      ]
+    },
+    "expected_submit": "pytest",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

@@ -1,0 +1,22 @@
+{
+  "name": "json_nested_city",
+  "title": "Nested City",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open profile.json and report the city under address.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "profile.json": [
+        "{\"user\":\"ada\",\"address\":{\"city\":\"Taipei\",\"zip\":\"100\"}}"
+      ]
+    },
+    "expected_submit": "Taipei",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

@@ -1,0 +1,24 @@
+{
+  "name": "owner_from_codeowners",
+  "title": "JS File Owner",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read CODEOWNERS. Who owns *.js files? Final answer: the owner handle including @.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "CODEOWNERS": [
+        "* @ops",
+        "*.js @frontend",
+        "docs/ @docs"
+      ]
+    },
+    "expected_submit": "@frontend",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

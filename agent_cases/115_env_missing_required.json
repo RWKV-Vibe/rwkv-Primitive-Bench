@@ -1,0 +1,28 @@
+{
+  "name": "env_missing_required",
+  "title": "Missing Required Env Key",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "required.txt lists required keys; app.env has key=value pairs. Which required key is missing? Final answer: that key only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "required.txt": [
+        "HOST",
+        "PORT",
+        "TOKEN"
+      ],
+      "app.env": [
+        "HOST=0.0.0.0",
+        "PORT=8080"
+      ]
+    },
+    "expected_submit": "TOKEN",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

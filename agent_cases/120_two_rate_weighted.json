@@ -1,0 +1,27 @@
+{
+  "name": "two_rate_weighted",
+  "title": "Weighted Average Rate",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "rates.txt has RATE_A, RATE_B, and WEIGHT_A (0-1). Compute WEIGHT_A*RATE_A + (1-WEIGHT_A)*RATE_B. Final answer: two decimals.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "rates.txt": [
+        "RATE_A=10.00",
+        "RATE_B=20.00",
+        "WEIGHT_A=0.25"
+      ],
+      "README.md": [
+        "0.25*10 + 0.75*20 = 17.50"
+      ]
+    },
+    "expected_submit": "17.50",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

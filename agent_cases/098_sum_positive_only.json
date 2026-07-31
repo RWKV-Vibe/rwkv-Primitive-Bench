@@ -1,0 +1,35 @@
+{
+  "name": "sum_positive_only",
+  "title": "Count Positive Integers",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "vals.txt has one integer per line. How many values are strictly greater than zero? Final answer: integer.",
+  "tools": [
+    "list_files",
+    "read_file",
+    "search",
+    "submit"
+  ],
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "vals.txt": [
+        "3",
+        "0",
+        "-2",
+        "4",
+        "-9",
+        "1"
+      ],
+      "README.md": [
+        "Count values > 0. Here: 3, 4, and 1 -> 3"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

@@ -1,0 +1,27 @@
+{
+  "name": "markdown_h2_count",
+  "title": "H2 Heading Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "How many level-2 markdown headings (lines starting with ## ) are in notes.md? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "notes.md": [
+        "# Title",
+        "## One",
+        "text",
+        "## Two",
+        "## Three",
+        "### nested"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

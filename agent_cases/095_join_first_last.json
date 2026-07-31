@@ -1,0 +1,23 @@
+{
+  "name": "join_first_last",
+  "title": "Join Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "person.ini has first and last. Report \"first last\".",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "person.ini": [
+        "first=Grace",
+        "last=Hopper"
+      ]
+    },
+    "expected_submit": "Grace Hopper",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

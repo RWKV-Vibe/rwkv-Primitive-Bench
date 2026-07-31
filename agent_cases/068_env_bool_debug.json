@@ -1,0 +1,23 @@
+{
+  "name": "env_bool_debug",
+  "title": "Debug Enabled",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Is debug enabled in app.env? Report true or false.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "app.env": [
+        "DEBUG=false",
+        "PORT=3000"
+      ]
+    },
+    "expected_submit": "false",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

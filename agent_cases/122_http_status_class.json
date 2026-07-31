@@ -1,0 +1,26 @@
+{
+  "name": "http_status_class",
+  "title": "Count 4xx Statuses",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "access.log has \"METHOD path STATUS\". How many statuses are in the 400-499 range? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "access.log": [
+        "GET / 200",
+        "GET /x 404",
+        "POST /y 201",
+        "GET /z 403",
+        "GET /a 500"
+      ]
+    },
+    "expected_submit": "2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

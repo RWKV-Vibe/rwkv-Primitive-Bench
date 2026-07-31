@@ -1,0 +1,25 @@
+{
+  "name": "policy_forbid_cash",
+  "title": "Max Refund Amount",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read policy.md. What is the maximum single refund allowed, in dollars? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "policy.md": [
+        "# Refunds",
+        "Cash refunds are not allowed.",
+        "Maximum single refund: 250 dollars.",
+        "Window: 30 days."
+      ]
+    },
+    "expected_submit": "250",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

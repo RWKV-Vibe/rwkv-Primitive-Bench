@@ -1,0 +1,29 @@
+{
+  "name": "grep_TODO_count",
+  "title": "Count TODO Marks",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open src/app.py. How many times does the exact token TODO appear? Report only the count.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "src/app.py": [
+        "x=1",
+        "# TODO: rename",
+        "y=2",
+        "# TODO: finish",
+        "z=3"
+      ],
+      "README.md": [
+        "Count exact TODO (uppercase)."
+      ]
+    },
+    "expected_submit": "2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

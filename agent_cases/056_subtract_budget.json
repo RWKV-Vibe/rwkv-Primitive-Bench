@@ -1,0 +1,26 @@
+{
+  "name": "subtract_budget",
+  "title": "Over Budget Amount",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In budget.txt, by how much does SPENT exceed TOTAL? Final answer: integer (use 0 if not over).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "budget.txt": [
+        "TOTAL=100",
+        "SPENT=130"
+      ],
+      "README.md": [
+        "over = max(SPENT - TOTAL, 0) -> 30"
+      ]
+    },
+    "expected_submit": "30",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

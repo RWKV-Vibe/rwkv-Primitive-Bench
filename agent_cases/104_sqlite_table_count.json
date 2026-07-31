@@ -1,0 +1,25 @@
+{
+  "name": "sqlite_table_count",
+  "title": "SQLite Table Count Hint",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "schema.sql creates tables. How many CREATE TABLE statements are there? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "schema.sql": [
+        "CREATE TABLE users (id INT);",
+        "CREATE TABLE orders (id INT);",
+        "CREATE INDEX ix ON users(id);",
+        "CREATE TABLE items (id INT);"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

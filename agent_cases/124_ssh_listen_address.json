@@ -1,0 +1,24 @@
+{
+  "name": "ssh_listen_address",
+  "title": "SSH Listen Address",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "sshd_config.txt sets ListenAddress. Final answer: that address only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "sshd_config.txt": [
+        "Port 22",
+        "ListenAddress 10.1.2.3",
+        "PermitRootLogin no"
+      ]
+    },
+    "expected_submit": "10.1.2.3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

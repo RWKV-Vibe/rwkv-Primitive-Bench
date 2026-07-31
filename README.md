@@ -16,7 +16,15 @@ Dependencies:
 
 ## What It Tests
 
-The default suite has 30 file-backed tasks under `agent_cases/` covering:
+The default suite has **130** file-backed benchmark tasks under `agent_cases/` (one folder; the HTML report groups them visually):
+
+- **001–030 Original**: hard suite (honest natural prompts; the ~19/30 baseline set)
+- **031–130 Extra**: 100 additional everyday agent tasks (CSV/JSON/config/log/etc.)
+- **131–134 Open probes**: optional open-ended prompts (not scored via `submit`)
+
+Run all together with `--task all`. The report sidebar/main view shows separate pass rates for Original vs Extra.
+
+Coverage includes:
 
 - Basic tool calling and exact submission
 - File discovery, search, and read/submit workflows

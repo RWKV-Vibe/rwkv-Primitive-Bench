@@ -1,0 +1,27 @@
+{
+  "name": "gitignore_pattern",
+  "title": "Gitignore Match Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "How many non-empty, non-comment lines are in .gitignore? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      ".gitignore": [
+        "# build",
+        "dist/",
+        "",
+        "*.pyc",
+        ".env",
+        "# end"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

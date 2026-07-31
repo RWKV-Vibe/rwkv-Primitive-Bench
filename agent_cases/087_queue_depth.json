@@ -1,0 +1,22 @@
+{
+  "name": "queue_depth",
+  "title": "Queue Depth",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "metrics.json has queue_depth. Report that integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "metrics.json": [
+        "{\"queue_depth\": 17, \"workers\": 4}"
+      ]
+    },
+    "expected_submit": "17",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

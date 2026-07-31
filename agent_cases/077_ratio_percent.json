@@ -1,0 +1,26 @@
+{
+  "name": "ratio_percent",
+  "title": "Ratio As Percent",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "stats.txt has hits and total. Report hits/total as an integer percent with no % sign (floor).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "stats.txt": [
+        "hits=3",
+        "total=8"
+      ],
+      "README.md": [
+        "floor(100*hits/total), e.g. 37"
+      ]
+    },
+    "expected_submit": "37",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

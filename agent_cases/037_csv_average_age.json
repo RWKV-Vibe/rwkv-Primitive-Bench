@@ -1,0 +1,29 @@
+{
+  "name": "csv_average_age",
+  "title": "Average Age",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "people.csv has ages. What is the average age across data rows? Report with one decimal place.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "people.csv": [
+        "name,age",
+        "Ann,20",
+        "Ben,30",
+        "Cy,25"
+      ],
+      "README.md": [
+        "Average of the age column, one digit after the decimal (e.g. 25.0)."
+      ]
+    },
+    "expected_submit": "25.0",
+    "required_tools": [
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

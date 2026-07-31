@@ -1,0 +1,29 @@
+{
+  "name": "yaml_port_extract",
+  "title": "Extract Listen Port",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open service.yaml and report the listen port number only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "service.yaml": [
+        "name: api",
+        "listen:",
+        "  host: 0.0.0.0",
+        "  port: 8087",
+        "debug: false"
+      ],
+      "README.md": [
+        "Port is under listen.port."
+      ]
+    },
+    "expected_submit": "8087",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

@@ -1,0 +1,24 @@
+{
+  "name": "xml_root_attr",
+  "title": "XML Root Attribute",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In config.xml, what is the value of the version attribute on the root <app> element? Final answer: that value only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "config.xml": [
+        "<app version=\"9\" env=\"prod\">",
+        "  <feature on=\"true\"/>",
+        "</app>"
+      ]
+    },
+    "expected_submit": "9",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

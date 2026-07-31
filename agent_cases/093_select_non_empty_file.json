@@ -1,0 +1,30 @@
+{
+  "name": "select_non_empty_file",
+  "title": "Non Empty File Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "One of a.txt/b.txt is empty. Report the filename that has content.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "a.txt": [
+        ""
+      ],
+      "b.txt": [
+        "hello"
+      ],
+      "README.md": [
+        "Submit the non-empty filename."
+      ]
+    },
+    "expected_submit": "b.txt",
+    "required_tools": [
+      "list_files",
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

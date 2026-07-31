@@ -1,0 +1,26 @@
+{
+  "name": "log_level_error_count",
+  "title": "ERROR Level Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "How many lines in app.log start with ERROR? Report only the count.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "app.log": [
+        "INFO ok",
+        "ERROR boom",
+        "WARN x",
+        "ERROR again",
+        "DEBUG z"
+      ]
+    },
+    "expected_submit": "2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

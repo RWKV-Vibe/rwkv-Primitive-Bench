@@ -1,0 +1,24 @@
+{
+  "name": "props_java_home",
+  "title": "Java Property Value",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In app.properties, what is the value of java.home? Final answer: that path only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "app.properties": [
+        "app.name=demo",
+        "java.home=/usr/lib/jvm/temurin-21",
+        "debug=false"
+      ]
+    },
+    "expected_submit": "/usr/lib/jvm/temurin-21",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

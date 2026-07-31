@@ -1,0 +1,25 @@
+{
+  "name": "ini_database_name",
+  "title": "Database Name From INI",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In db.ini under [database], what is name=? Final answer: the name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "db.ini": [
+        "[database]",
+        "host=localhost",
+        "name=shop_prod",
+        "user=app"
+      ]
+    },
+    "expected_submit": "shop_prod",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

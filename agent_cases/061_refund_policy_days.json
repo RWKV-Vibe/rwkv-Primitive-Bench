@@ -1,0 +1,27 @@
+{
+  "name": "refund_policy_days",
+  "title": "Refund Window Days",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "According to policy.md, how many days is the refund window? Report only the integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "policy.md": [
+        "# Returns",
+        "Customers may request a refund within 14 days of delivery.",
+        "Exchanges are 30 days."
+      ],
+      "faq.txt": [
+        "We sometimes allow 60 days for VIPs — ignore this unless policy.md says so."
+      ]
+    },
+    "expected_submit": "14",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

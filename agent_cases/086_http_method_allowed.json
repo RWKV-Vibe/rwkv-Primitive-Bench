@@ -1,0 +1,24 @@
+{
+  "name": "http_method_allowed",
+  "title": "Allowed HTTP Method",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "routes.md documents one endpoint. Which HTTP method is allowed? Report GET/POST/PUT/DELETE.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "routes.md": [
+        "## /v1/health",
+        "Method: GET",
+        "Auth: none"
+      ]
+    },
+    "expected_submit": "GET",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

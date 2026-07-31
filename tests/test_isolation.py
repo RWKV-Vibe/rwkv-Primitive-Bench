@@ -321,8 +321,10 @@ class HostBoundaryTests(unittest.TestCase):
 class AgentCaseLoaderTests(unittest.TestCase):
     def test_default_benchmark_cases_load_from_files(self) -> None:
         tasks = make_tasks()
-        self.assertEqual(len(tasks), 30)
+        self.assertGreaterEqual(len(tasks), 30)
+        self.assertEqual(len(tasks), 130)
         self.assertIn("fx_column_trap", tasks)
+        self.assertIn("final_checklist_item", tasks)
         env = tasks["fx_column_trap"].make_env()
         self.assertEqual(env.expected_submit, "28079.50")
         self.assertIn("orders.csv", env.files)

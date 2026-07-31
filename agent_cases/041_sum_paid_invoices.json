@@ -1,0 +1,26 @@
+{
+  "name": "sum_paid_invoices",
+  "title": "Count Unpaid Invoices",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In invoices.csv, how many rows have status unpaid? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "invoices.csv": [
+        "id,status,amount",
+        "1,paid,10",
+        "2,unpaid,20",
+        "3,unpaid,5",
+        "4,paid,8"
+      ]
+    },
+    "expected_submit": "2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

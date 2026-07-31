@@ -1,0 +1,26 @@
+{
+  "name": "multiply_qty_price",
+  "title": "Discounted Price",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Apply the store discount described in README.md to the listed PRICE. Final answer: two decimals.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "price.txt": [
+        "PRICE=80.00"
+      ],
+      "README.md": [
+        "Store rule: 10% off means multiply PRICE by 0.9.",
+        "Keep two decimals. 80.00 -> 72.00"
+      ]
+    },
+    "expected_submit": "72.00",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

@@ -1,0 +1,26 @@
+{
+  "name": "csv_filter_count",
+  "title": "Active Rows Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In users.csv, how many rows have status=active? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "users.csv": [
+        "id,status",
+        "1,active",
+        "2,disabled",
+        "3,active",
+        "4,active"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

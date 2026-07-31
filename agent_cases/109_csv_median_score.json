@@ -1,0 +1,28 @@
+{
+  "name": "csv_median_score",
+  "title": "Median Score",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "scores.csv has a score column. What is the median score? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "scores.csv": [
+        "name,score",
+        "a,10",
+        "b,30",
+        "c,20"
+      ],
+      "README.md": [
+        "Odd count: middle value after sort. 10,20,30 -> 20"
+      ]
+    },
+    "expected_submit": "20",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

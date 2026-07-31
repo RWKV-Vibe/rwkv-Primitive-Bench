@@ -1,0 +1,24 @@
+{
+  "name": "sort_names_alpha",
+  "title": "Sort Names",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "names.txt has one name per line. Report them sorted A-Z as comma-separated values.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "names.txt": [
+        "Zoe",
+        "Amy",
+        "Lin"
+      ]
+    },
+    "expected_submit": "Amy,Lin,Zoe",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

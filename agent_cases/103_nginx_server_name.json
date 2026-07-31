@@ -1,0 +1,26 @@
+{
+  "name": "nginx_server_name",
+  "title": "Nginx Server Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open nginx.conf. What is the server_name? Final answer: the hostname only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "nginx.conf": [
+        "server {",
+        "  listen 80;",
+        "  server_name api.example.com;",
+        "  root /var/www;",
+        "}"
+      ]
+    },
+    "expected_submit": "api.example.com",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

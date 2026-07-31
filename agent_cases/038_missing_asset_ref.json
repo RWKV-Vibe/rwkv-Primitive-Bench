@@ -1,0 +1,31 @@
+{
+  "name": "missing_asset_ref",
+  "title": "Broken Markdown Link",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "guide.md links to local docs. One linked path does not exist. Final answer: that missing path only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "guide.md": [
+        "# Guide",
+        "See [intro](docs/intro.md) and [api](docs/api.md)."
+      ],
+      "docs/intro.md": [
+        "hello"
+      ],
+      "README.md": [
+        "Find which markdown link target is absent from the workspace."
+      ]
+    },
+    "expected_submit": "docs/api.md",
+    "required_tools": [
+      "list_files",
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

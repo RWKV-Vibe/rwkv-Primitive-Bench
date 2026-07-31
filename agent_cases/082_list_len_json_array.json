@@ -1,0 +1,22 @@
+{
+  "name": "list_len_json_array",
+  "title": "Last Array Element",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What is the last element in the items.json array? Final answer: that string only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "items.json": [
+        "[\"red\",\"green\",\"blue\"]"
+      ]
+    },
+    "expected_submit": "blue",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

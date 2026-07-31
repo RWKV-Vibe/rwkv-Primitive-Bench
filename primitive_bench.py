@@ -486,6 +486,8 @@ class TaskResult:
     tool_calls: int
     final_answer: str
     turns: int
+    case_id: int | None = None
+    suite: str = "other"
 
 
 @dataclass
@@ -499,6 +501,59 @@ class Task:
     score: Callable[["EmulatedEnv", list[Event], str, int], tuple[bool, float, list[str]]]
     max_turns: int = 20
     mode: str = "benchmark"
+    case_id: int | None = None
+    suite: str = "other"
+
+
+SUITE_LABELS = {
+    "original": "Original (001–030)",
+    "extra": "Extra (031–130)",
+    "open_probe": "Open probes",
+    "other": "Other",
+}
+
+
+def case_id_from_path(path: Path) -> int | None:
+    match = re.match(r"^(\d+)_", path.name)
+    return int(match.group(1)) if match else None
+
+
+def suite_for_case_id(case_id: int | None, mode: str = "benchmark") -> str:
+    if mode == "open_probe":
+        return "open_probe"
+    if case_id is None:
+        return "other"
+    if 1 <= case_id <= 30:
+        return "original"
+    if 31 <= case_id <= 130:
+        return "extra"
+    return "other"
+
+
+def make_task_result(
+    task: Task,
+    *,
+    passed: bool,
+    score: float,
+    failures: list[str],
+    events: list[Event],
+    tool_calls: int,
+    final_answer: str,
+    turns: int,
+) -> TaskResult:
+    return TaskResult(
+        name=task.name,
+        title=task.title,
+        passed=passed,
+        score=score,
+        failures=failures,
+        events=events,
+        tool_calls=tool_calls,
+        final_answer=final_answer,
+        turns=turns,
+        case_id=task.case_id,
+        suite=task.suite,
+    )
 
 
 @dataclass(frozen=True)
@@ -1317,6 +1372,41 @@ end
                 "PASS\n2 date parser tests passed"
                 if self.tests_passed
                 else "FAIL\nValueError: time data ' 2026/07/05 ' does not match expected date formats"
+            )
+            return self.last_test_output
+        if self.scenario == "username_normalize_patch":
+            helper = self.files.get("helpers.py", "")
+            normalized = re.sub(r"\s+", "", helper)
+            self.tests_passed = ".strip()" in normalized and ".lower()" in normalized
+            self.last_test_output = (
+                "PASS\n2 username normalize tests passed"
+                if self.tests_passed
+                else "FAIL\nassert normalize_username('  Bo ') == 'bo'"
+            )
+            return self.last_test_output
+        if self.scenario == "shipping_total_patch":
+            invoice = self.files.get("invoice.py", "")
+            normalized = re.sub(r"\s+", "", invoice)
+            self.tests_passed = "subtotal+shipping" in normalized or "shipping+subtotal" in normalized
+            self.last_test_output = (
+                "PASS\nshipping included in total"
+                if self.tests_passed
+                else "FAIL\nAssertionError: total expected subtotal+shipping"
+            )
+            return self.last_test_output
+        if self.scenario == "line_qty_price_patch":
+            invoice = self.files.get("invoice.py", "")
+            normalized = re.sub(r"\s+", "", invoice)
+            self.tests_passed = (
+                "qty*unit_price" in normalized
+                or "unit_price*qty" in normalized
+                or "quantity*unit_price" in normalized
+                or "unit_price*quantity" in normalized
+            )
+            self.last_test_output = (
+                "PASS\nline total multiplies qty*unit_price"
+                if self.tests_passed
+                else "FAIL\nAssertionError: line_total expected qty*unit_price"
             )
             return self.last_test_output
         if self.scenario == "tool_result_truthfulness":
@@ -2760,6 +2850,7 @@ def load_case(path: Path) -> Task:
     max_turns = raw.get("max_turns", 20)
     if not isinstance(max_turns, int):
         raise ValueError(f"{path}: max_turns must be an integer")
+    case_id = case_id_from_path(path)
     return Task(
         name=name,
         title=title,
@@ -2770,6 +2861,8 @@ def load_case(path: Path) -> Task:
         score=load_case_score(raw.get("evaluation", "open_probe" if mode == "open_probe" else "submit")),
         max_turns=max_turns,
         mode=mode,
+        case_id=case_id,
+        suite=suite_for_case_id(case_id, mode),
     )
 
 
@@ -3625,9 +3718,8 @@ def run_task_chat(
     else:
         add_evaluator_note(events, "Final verdict: PASS")
 
-    return TaskResult(
-        name=task.name,
-        title=task.title,
+    return make_task_result(
+        task,
         passed=passed,
         score=score,
         failures=failures,
@@ -3975,7 +4067,16 @@ def run_task_completion_g1i(
         add_evaluator_note(events, "Final verdict: FAIL\n" + "\n".join(f"- {failure}" for failure in failures))
     else:
         add_evaluator_note(events, "Final verdict: PASS")
-    return TaskResult(task.name, task.title, passed, score, failures, events, tool_call_count, final_answer, turns_used)
+    return make_task_result(
+        task,
+        passed=passed,
+        score=score,
+        failures=failures,
+        events=events,
+        tool_calls=tool_call_count,
+        final_answer=final_answer,
+        turns=turns_used,
+    )
 
 
 
@@ -4218,9 +4319,8 @@ def run_task_completion_react(
     else:
         add_evaluator_note(events, "Final verdict: PASS")
 
-    return TaskResult(
-        name=task.name,
-        title=task.title,
+    return make_task_result(
+        task,
         passed=passed,
         score=score,
         failures=failures,
@@ -4325,6 +4425,8 @@ def result_to_json(result: TaskResult) -> Json:
         "tool_calls": result.tool_calls,
         "turns": result.turns,
         "final_answer": result.final_answer,
+        "case_id": result.case_id,
+        "suite": result.suite,
         "events": [event_to_json(event) for event in result.events],
     }
 
@@ -4340,6 +4442,12 @@ def event_from_json(value: Json) -> Event:
 
 
 def result_from_json(value: Json) -> TaskResult:
+    case_id = value.get("case_id")
+    if not isinstance(case_id, int):
+        case_id = None
+    suite = value.get("suite")
+    if not isinstance(suite, str) or not suite:
+        suite = suite_for_case_id(case_id, "open_probe" if value.get("mode") == "open_probe" else "benchmark")
     return TaskResult(
         name=str(value.get("name", "")),
         title=str(value.get("title", "")),
@@ -4350,7 +4458,27 @@ def result_from_json(value: Json) -> TaskResult:
         tool_calls=int(value.get("tool_calls", 0)),
         final_answer=str(value.get("final_answer", "")),
         turns=int(value.get("turns", 0)),
+        case_id=case_id,
+        suite=suite,
     )
+
+
+def lookup_suite_by_name(name: str, cases_dir: str | Path = "agent_cases") -> tuple[int | None, str]:
+    """Best-effort suite tagging for older results.json without case_id/suite fields."""
+    try:
+        directory = resolve_cases_dir(str(cases_dir)) if not isinstance(cases_dir, Path) else cases_dir
+        for path in directory.glob("*.json"):
+            try:
+                raw = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            if isinstance(raw, dict) and raw.get("name") == name:
+                case_id = case_id_from_path(path)
+                mode = str(raw.get("mode", "benchmark"))
+                return case_id, suite_for_case_id(case_id, mode)
+    except ValueError:
+        pass
+    return None, "other"
 
 
 def render_html_from_results_json(results_json: Json) -> str:
@@ -4358,7 +4486,17 @@ def render_html_from_results_json(results_json: Json) -> str:
     raw_results = results_json.get("results")
     if not isinstance(run_meta, dict) or not isinstance(raw_results, list):
         raise ValueError("results JSON must contain object key 'run' and list key 'results'")
-    results = [result_from_json(result) for result in raw_results if isinstance(result, dict)]
+    cases_dir = str(run_meta.get("cases") or "agent_cases")
+    results: list[TaskResult] = []
+    for raw in raw_results:
+        if not isinstance(raw, dict):
+            continue
+        result = result_from_json(raw)
+        if result.suite == "other" and result.case_id is None and result.name:
+            case_id, suite = lookup_suite_by_name(result.name, cases_dir)
+            result.case_id = case_id
+            result.suite = suite
+        results.append(result)
     return render_html(results, run_meta)
 
 
@@ -4386,39 +4524,71 @@ def render_event(event: Event) -> str:
 
 
 def render_html(results: list[TaskResult], run_meta: Json) -> str:
-    sidebar_items = []
-    main_sections = []
     model = str(run_meta.get("model") or "unknown-model")
     protocol = str(run_meta.get("protocol") or "chat")
     mode = str(run_meta.get("mode") or "benchmark")
     task_scope = str(run_meta.get("open_probe") or run_meta.get("task") or "all")
     report_title = f"Primitive Bench - {model} - {protocol} - {task_scope}"
+    outcome_word = "answered" if mode == "open_probe" else "passed"
+
+    suite_order = ["original", "extra", "open_probe", "other"]
+    grouped: dict[str, list[TaskResult]] = {key: [] for key in suite_order}
     for result in results:
-        if mode == "open_probe":
-            badge = "ANSWERED" if result.passed else "NO ANSWER"
-        else:
-            badge = "PASS" if result.passed else "FAIL"
-        badge_class = "pass" if result.passed else "fail"
-        failures = "" if result.passed else "<ul>" + "".join(f"<li>{html_escape(f)}</li>" for f in result.failures) + "</ul>"
-        sidebar_items.append(
-            f"<a class='task-link {badge_class}' href='#{html_escape(result.name)}'>"
-            f"<span>{html_escape(result.name)}</span><b>{badge}</b></a>"
+        grouped.setdefault(result.suite if result.suite in grouped else "other", []).append(result)
+
+    sidebar_parts: list[str] = []
+    main_parts: list[str] = []
+    suite_summaries: list[str] = []
+
+    for suite_key in suite_order:
+        suite_results = grouped.get(suite_key) or []
+        if not suite_results:
+            continue
+        suite_passed = sum(1 for item in suite_results if item.passed)
+        suite_total = len(suite_results)
+        label = SUITE_LABELS.get(suite_key, suite_key)
+        suite_summaries.append(f"{html_escape(label)}: {suite_passed}/{suite_total}")
+        sidebar_parts.append(
+            f"<div class='suite-block suite-{html_escape(suite_key)}'>"
+            f"<div class='suite-head'><span>{html_escape(label)}</span>"
+            f"<b>{suite_passed}/{suite_total}</b></div>"
         )
-        main_sections.append(
-            f"<article class='task' id='{html_escape(result.name)}'>"
-            f"<header><h2>{html_escape(result.title)}</h2>"
-            f"<span class='badge {badge_class}'>{badge}</span>"
-            f"<span class='metric'>score {result.score:.2f}</span>"
-            f"<span class='metric'>{result.tool_calls} tool calls</span>"
-            f"<span class='metric'>{result.turns} turns</span></header>"
-            f"{failures}"
-            + "".join(render_event(event) for event in result.events)
-            + "</article>"
+        main_parts.append(
+            f"<section class='suite-section suite-{html_escape(suite_key)}' id='suite-{html_escape(suite_key)}'>"
+            f"<div class='suite-banner'><h2>{html_escape(label)}</h2>"
+            f"<span class='suite-score'>{suite_passed}/{suite_total} {outcome_word}</span></div>"
         )
+        for result in suite_results:
+            if mode == "open_probe":
+                badge = "ANSWERED" if result.passed else "NO ANSWER"
+            else:
+                badge = "PASS" if result.passed else "FAIL"
+            badge_class = "pass" if result.passed else "fail"
+            failures = "" if result.passed else "<ul>" + "".join(f"<li>{html_escape(f)}</li>" for f in result.failures) + "</ul>"
+            case_label = f"{result.case_id:03d} " if isinstance(result.case_id, int) else ""
+            sidebar_parts.append(
+                f"<a class='task-link {badge_class}' href='#{html_escape(result.name)}'>"
+                f"<span>{html_escape(case_label + result.name)}</span><b>{badge}</b></a>"
+            )
+            main_parts.append(
+                f"<article class='task' id='{html_escape(result.name)}'>"
+                f"<header><h2>{html_escape(result.title)}</h2>"
+                f"<span class='badge suite-tag'>{html_escape(label)}</span>"
+                f"<span class='badge {badge_class}'>{badge}</span>"
+                f"<span class='metric'>score {result.score:.2f}</span>"
+                f"<span class='metric'>{result.tool_calls} tool calls</span>"
+                f"<span class='metric'>{result.turns} turns</span></header>"
+                f"{failures}"
+                + "".join(render_event(event) for event in result.events)
+                + "</article>"
+            )
+        sidebar_parts.append("</div>")
+        main_parts.append("</section>")
 
     passed = sum(1 for r in results if r.passed)
     total = len(results)
     meta = html_escape(dump_json(run_meta))
+    suite_summary_html = " · ".join(suite_summaries)
     return f"""<!doctype html>
 <html lang="en">
 <head>
@@ -4442,24 +4612,42 @@ def render_html(results: list[TaskResult], run_meta: Json) -> str:
   --eval: #4a2630;
   --pass: #35c46f;
   --fail: #ff5e6c;
+  --original: #3b82f6;
+  --extra: #a78bfa;
+  --open: #38bdf8;
 }}
 * {{ box-sizing: border-box; }}
 body {{ margin: 0; font: 15px/1.45 system-ui, -apple-system, Segoe UI, sans-serif; background: var(--bg); color: var(--text); }}
 a {{ color: inherit; text-decoration: none; }}
-.layout {{ display: grid; grid-template-columns: 300px 1fr; min-height: 100vh; }}
+.layout {{ display: grid; grid-template-columns: 320px 1fr; min-height: 100vh; }}
 .sidebar {{ position: sticky; top: 0; height: 100vh; overflow: auto; border-right: 1px solid var(--border); background: #0c0e13; padding: 18px; }}
 .sidebar h1 {{ font-size: 20px; margin: 0 0 8px; }}
 .run-title {{ font-size: 18px; font-weight: 700; color: #fff; margin-bottom: 2px; overflow-wrap: anywhere; }}
 .run-subtitle {{ color: var(--muted); font-size: 13px; margin-bottom: 14px; overflow-wrap: anywhere; }}
-.summary {{ color: var(--muted); margin-bottom: 16px; }}
+.summary {{ color: var(--muted); margin-bottom: 8px; }}
+.suite-summary {{ color: var(--muted); font-size: 12px; margin-bottom: 16px; line-height: 1.5; }}
+.suite-block {{ margin: 14px 0 18px; padding-top: 4px; }}
+.suite-head {{ display: flex; justify-content: space-between; gap: 10px; align-items: baseline; margin: 4px 0 8px; font-size: 13px; color: #fff; font-weight: 650; }}
+.suite-block.suite-original .suite-head {{ color: #93c5fd; }}
+.suite-block.suite-extra .suite-head {{ color: #ddd6fe; }}
+.suite-block.suite-open_probe .suite-head {{ color: #bae6fd; }}
 .task-link {{ display: flex; justify-content: space-between; gap: 12px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; margin: 8px 0; background: var(--panel); }}
 .task-link.pass b, .badge.pass {{ color: var(--pass); }}
 .task-link.fail b, .badge.fail {{ color: var(--fail); }}
 .content {{ max-width: 1080px; width: 100%; padding: 24px; }}
+.suite-section {{ margin-bottom: 42px; }}
+.suite-banner {{ display: flex; flex-wrap: wrap; align-items: baseline; gap: 12px; margin: 8px 0 18px; padding: 12px 14px; border: 1px solid var(--border); border-radius: 12px; background: var(--panel-2); }}
+.suite-banner h2 {{ margin: 0; font-size: 20px; }}
+.suite-section.suite-original .suite-banner {{ border-left: 4px solid var(--original); }}
+.suite-section.suite-extra .suite-banner {{ border-left: 4px solid var(--extra); }}
+.suite-section.suite-open_probe .suite-banner {{ border-left: 4px solid var(--open); }}
+.suite-score {{ color: var(--muted); }}
 .task {{ margin-bottom: 36px; }}
 .task header {{ display: flex; flex-wrap: wrap; align-items: center; gap: 10px; margin-bottom: 12px; }}
 .task h2 {{ margin: 0 10px 0 0; font-size: 24px; }}
 .badge, .metric {{ border: 1px solid var(--border); border-radius: 999px; padding: 3px 9px; color: var(--muted); background: var(--panel); }}
+.badge.suite-tag {{ color: #dbeafe; }}
+.suite-section.suite-extra .badge.suite-tag {{ color: #ede9fe; }}
 .bubble {{ border: 1px solid var(--border); border-radius: 14px; margin: 12px 0; padding: 12px; background: var(--panel); box-shadow: 0 1px 0 rgba(255,255,255,.03) inset; }}
 .bubble.system {{ border-left: 4px solid #778196; }}
 .bubble.user {{ background: var(--user); }}
@@ -4489,12 +4677,13 @@ ul {{ color: var(--fail); }}
     <h1>Primitive Bench</h1>
     <div class="run-title">{html_escape(model)}</div>
     <div class="run-subtitle">{html_escape(mode)} / {html_escape(protocol)} / {html_escape(task_scope)}</div>
-    <div class="summary">{passed}/{total} {'answered' if mode == 'open_probe' else 'passed'}</div>
-    {''.join(sidebar_items)}
+    <div class="summary">{passed}/{total} {outcome_word}</div>
+    <div class="suite-summary">{suite_summary_html}</div>
+    {''.join(sidebar_parts)}
     <details class="meta"><summary>run metadata</summary><pre>{meta}</pre></details>
   </aside>
   <main class="content">
-    {''.join(main_sections)}
+    {''.join(main_parts)}
   </main>
 </div>
 </body>
@@ -4740,6 +4929,16 @@ def main(argv: list[str]) -> int:
     passed = sum(1 for result in results if result.passed)
     print(f"wrote {out_dir / 'index.html'}")
     print(f"passed {passed}/{len(results)}")
+    by_suite: dict[str, list[TaskResult]] = {}
+    for result in results:
+        by_suite.setdefault(result.suite, []).append(result)
+    for suite_key in ("original", "extra", "open_probe", "other"):
+        suite_results = by_suite.get(suite_key) or []
+        if not suite_results:
+            continue
+        suite_passed = sum(1 for item in suite_results if item.passed)
+        label = SUITE_LABELS.get(suite_key, suite_key)
+        print(f"  {label}: {suite_passed}/{len(suite_results)}")
     return 0 if passed == len(results) else 2
 
 

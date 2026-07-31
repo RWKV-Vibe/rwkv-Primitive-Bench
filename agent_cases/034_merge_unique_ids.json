@@ -1,0 +1,34 @@
+{
+  "name": "merge_unique_ids",
+  "title": "Merge Unique IDs",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "team_a.txt and team_b.txt are ID lists. Report the sorted unique union as comma-separated IDs.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "team_a.txt": [
+        "u3",
+        "u1",
+        "u2"
+      ],
+      "team_b.txt": [
+        "u2",
+        "u4",
+        "u1"
+      ],
+      "README.md": [
+        "Merge both lists, unique, ascending.",
+        "Submit like: u1,u2,u3,u4"
+      ]
+    },
+    "expected_submit": "u1,u2,u3,u4",
+    "required_tools": [
+      "read_file",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

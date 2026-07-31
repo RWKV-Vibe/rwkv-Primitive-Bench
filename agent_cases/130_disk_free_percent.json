@@ -1,0 +1,26 @@
+{
+  "name": "disk_free_percent",
+  "title": "Disk Free Percent",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "df.txt has size_gb and used_gb. What integer percent is still free? floor((size-used)/size*100).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "df.txt": [
+        "size_gb=200",
+        "used_gb=50"
+      ],
+      "README.md": [
+        "free_pct = floor((200-50)/200*100) = 75"
+      ]
+    },
+    "expected_submit": "75",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

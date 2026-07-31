@@ -1,0 +1,25 @@
+{
+  "name": "two_file_ratio",
+  "title": "Count Absolute Diff",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Each of alpha.txt and beta.txt has a COUNT. Final answer: the absolute difference as an integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "alpha.txt": [
+        "COUNT=4"
+      ],
+      "beta.txt": [
+        "COUNT=9"
+      ]
+    },
+    "expected_submit": "5",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

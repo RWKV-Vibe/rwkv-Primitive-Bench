@@ -1,0 +1,25 @@
+{
+  "name": "min_price_item",
+  "title": "Cheapest Item Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "catalog.json lists items with prices. Which item is cheapest? Report only its name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "catalog.json": [
+        "{\"items\":[{\"name\":\"pen\",\"price\":2.5},{\"name\":\"notebook\",\"price\":1.2},{\"name\":\"clip\",\"price\":1.2},{\"name\":\"bag\",\"price\":9.0}]}"
+      ],
+      "README.md": [
+        "If tied for cheapest, pick the first in the list."
+      ]
+    },
+    "expected_submit": "notebook",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

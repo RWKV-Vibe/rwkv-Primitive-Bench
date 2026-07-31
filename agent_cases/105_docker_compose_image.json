@@ -1,0 +1,28 @@
+{
+  "name": "docker_compose_image",
+  "title": "Compose Service Image",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In docker-compose.yml, what image does the web service use? Final answer: the image string only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "docker-compose.yml": [
+        "services:",
+        "  web:",
+        "    image: ghcr.io/acme/web:1.4.2",
+        "    ports:",
+        "      - \"8080:80\"",
+        "  db:",
+        "    image: postgres:16"
+      ]
+    },
+    "expected_submit": "ghcr.io/acme/web:1.4.2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

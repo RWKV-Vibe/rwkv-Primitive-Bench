@@ -1,0 +1,22 @@
+{
+  "name": "word_count_body",
+  "title": "Body Word Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "How many whitespace-separated words are in body.txt? Report only the count.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "body.txt": [
+        "one two three four five"
+      ]
+    },
+    "expected_submit": "5",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

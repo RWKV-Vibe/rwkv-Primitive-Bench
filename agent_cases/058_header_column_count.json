@@ -1,0 +1,23 @@
+{
+  "name": "header_column_count",
+  "title": "Third Header Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In data.csv, what is the name of the third header column (1-based position 3)? Final answer: the column name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "data.csv": [
+        "id,name,email,city",
+        "1,Ada,a@x.com,NY"
+      ]
+    },
+    "expected_submit": "email",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

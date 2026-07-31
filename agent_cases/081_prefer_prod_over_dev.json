@@ -1,0 +1,28 @@
+{
+  "name": "prefer_prod_over_dev",
+  "title": "Prod Redis DB Index",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Which Redis DB index should production use? Prefer production settings over development. Final answer: an integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "dev.redis": [
+        "db=0"
+      ],
+      "prod.redis": [
+        "db=3"
+      ],
+      "README.md": [
+        "Use production redis settings."
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

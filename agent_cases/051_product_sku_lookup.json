@@ -1,0 +1,25 @@
+{
+  "name": "product_sku_lookup",
+  "title": "SKU Lookup",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "products.csv maps sku to name. What is the name for SKU-9? Report only the name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "products.csv": [
+        "sku,name",
+        "SKU-7,Widget",
+        "SKU-9,Gadget",
+        "SKU-2,Bolt"
+      ]
+    },
+    "expected_submit": "Gadget",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

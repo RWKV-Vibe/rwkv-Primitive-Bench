@@ -1,0 +1,24 @@
+{
+  "name": "toml_package_name",
+  "title": "TOML Package Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What is name under [package] in Cargo.toml? Final answer: the name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "Cargo.toml": [
+        "[package]",
+        "name = \"widget-core\"",
+        "version = \"0.1.0\""
+      ]
+    },
+    "expected_submit": "widget-core",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

@@ -1,0 +1,25 @@
+{
+  "name": "second_csv_row_name",
+  "title": "Last Row ID",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In people.csv, what is the id on the last data row? Final answer: the id only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "people.csv": [
+        "id,name",
+        "10,Ada",
+        "11,Bo",
+        "12,Cy"
+      ]
+    },
+    "expected_submit": "12",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

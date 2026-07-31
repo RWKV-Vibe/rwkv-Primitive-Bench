@@ -1,0 +1,27 @@
+{
+  "name": "balance_after_transfer",
+  "title": "Balance After Transfer",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "accounts.csv has Alice and Bob balances. After Alice sends 10 to Bob, what is Alice remaining? Report integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "accounts.csv": [
+        "name,balance",
+        "Alice,40",
+        "Bob,5"
+      ],
+      "README.md": [
+        "Transfer 10 from Alice to Bob; report Alice after."
+      ]
+    },
+    "expected_submit": "30",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

@@ -1,0 +1,22 @@
+{
+  "name": "whitespace_trim_token",
+  "title": "Trim Token",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "token.txt may have surrounding spaces/newlines. Report the trimmed token only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "token.txt": [
+        "  NEBULA-9  \n"
+      ]
+    },
+    "expected_submit": "NEBULA-9",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

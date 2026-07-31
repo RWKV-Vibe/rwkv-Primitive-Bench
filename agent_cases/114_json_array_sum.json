@@ -1,0 +1,22 @@
+{
+  "name": "json_array_sum",
+  "title": "JSON Number Array Sum",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "nums.json is a JSON array of integers. Report their sum.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "nums.json": [
+        "[2, 5, 8, -1]"
+      ]
+    },
+    "expected_submit": "14",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

@@ -1,0 +1,29 @@
+{
+  "name": "dedupe_preserve_order",
+  "title": "First Repeated Token",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open tokens.txt (one token per line). Which token is the first that already appeared earlier in the file? Final answer: that token text only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "tokens.txt": [
+        "red",
+        "green",
+        "blue",
+        "green",
+        "yellow"
+      ],
+      "README.md": [
+        "First repeat is green (line 4 repeats line 2)."
+      ]
+    },
+    "expected_submit": "green",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 18
+}

@@ -1,0 +1,23 @@
+{
+  "name": "two_step_add_constants",
+  "title": "Add Two Constants",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "constants.txt has A= and B=. Report A+B as an integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "constants.txt": [
+        "A=17",
+        "B=25"
+      ]
+    },
+    "expected_submit": "42",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

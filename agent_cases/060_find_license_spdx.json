@@ -1,0 +1,23 @@
+{
+  "name": "find_license_spdx",
+  "title": "License SPDX",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What SPDX license id is declared in LICENSE.txt? Report only the id.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "LICENSE.txt": [
+        "SPDX-License-Identifier: MIT",
+        "Copyright 2026"
+      ]
+    },
+    "expected_submit": "MIT",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

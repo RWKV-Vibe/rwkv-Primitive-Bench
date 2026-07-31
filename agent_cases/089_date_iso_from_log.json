@@ -1,0 +1,22 @@
+{
+  "name": "date_iso_from_log",
+  "title": "ISO Date From Log",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What calendar date (YYYY-MM-DD) appears on the deploy line in deploy.log? Report only the date.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "deploy.log": [
+        "deploy started 2026-03-18T09:00:00Z release=9"
+      ]
+    },
+    "expected_submit": "2026-03-18",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

@@ -1,0 +1,25 @@
+{
+  "name": "first_failing_test_name",
+  "title": "First Failing Test Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "test_report.txt lists test results. What is the name of the first failing test? Report only the name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "test_report.txt": [
+        "test_login ... ok",
+        "test_checkout ... FAIL",
+        "test_refund ... ok",
+        "test_search ... FAIL"
+      ]
+    },
+    "expected_submit": "test_checkout",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

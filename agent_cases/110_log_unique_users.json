@@ -1,0 +1,25 @@
+{
+  "name": "log_unique_users",
+  "title": "Unique Users In Log",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "auth.log lines look like user=NAME. How many distinct users appear? Final answer: integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "auth.log": [
+        "user=ada action=login",
+        "user=bo action=login",
+        "user=ada action=logout",
+        "user=cy action=login"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

@@ -1,0 +1,25 @@
+{
+  "name": "author_from_citation",
+  "title": "Citation Author",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "refs.bib has one entry. Report the author last name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "refs.bib": [
+        "@article{x,",
+        "  author = {Ada Lovelace},",
+        "  title = {Notes}",
+        "}"
+      ]
+    },
+    "expected_submit": "Lovelace",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

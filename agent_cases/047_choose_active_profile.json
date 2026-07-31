@@ -1,0 +1,27 @@
+{
+  "name": "choose_active_profile",
+  "title": "Active Profile",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Open settings.ini and report the active profile name from the [app] section.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "settings.ini": [
+        "[app]",
+        "profile = staging",
+        "debug = false"
+      ],
+      "README.md": [
+        "Submit the profile value only."
+      ]
+    },
+    "expected_submit": "staging",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

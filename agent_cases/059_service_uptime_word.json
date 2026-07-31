@@ -1,0 +1,22 @@
+{
+  "name": "service_uptime_word",
+  "title": "Uptime Status Word",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "status.json has an uptime field as a boolean. If true report up else down.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "status.json": [
+        "{\"service\":\"api\",\"uptime\":false}"
+      ]
+    },
+    "expected_submit": "down",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

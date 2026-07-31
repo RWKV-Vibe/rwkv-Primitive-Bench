@@ -1,0 +1,29 @@
+{
+  "name": "yes_if_exists_flag",
+  "title": "Flag File Exists",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Does READY.flag exist in the project root? Report yes or no.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "READY.flag": [
+        "1"
+      ],
+      "other.txt": [
+        "x"
+      ],
+      "README.md": [
+        "Answer yes/no about READY.flag presence."
+      ]
+    },
+    "expected_submit": "yes",
+    "required_tools": [
+      "list_files",
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

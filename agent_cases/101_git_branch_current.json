@@ -1,0 +1,25 @@
+{
+  "name": "git_branch_current",
+  "title": "Current Git Branch",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What branch name is recorded in HEAD.txt? Final answer: the branch name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "HEAD.txt": [
+        "ref: refs/heads/release/2026.7"
+      ],
+      "README.md": [
+        "Report the short branch name after refs/heads/."
+      ]
+    },
+    "expected_submit": "release/2026.7",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

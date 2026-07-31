@@ -1,0 +1,25 @@
+{
+  "name": "min_integer_in_list",
+  "title": "Minimum Integer",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "nums.txt has one integer per line. Report the minimum.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "nums.txt": [
+        "9",
+        "-2",
+        "4",
+        "0"
+      ]
+    },
+    "expected_submit": "-2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

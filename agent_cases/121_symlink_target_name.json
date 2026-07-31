@@ -1,0 +1,24 @@
+{
+  "name": "symlink_target_name",
+  "title": "Symlink Target",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "links.tsv maps link -> target. What does current point to? Final answer: the target path only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "links.tsv": [
+        "link\ttarget",
+        "current\treleases/v3",
+        "previous\treleases/v2"
+      ]
+    },
+    "expected_submit": "releases/v3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

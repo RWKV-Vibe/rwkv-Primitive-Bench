@@ -1,0 +1,27 @@
+{
+  "name": "final_checklist_item",
+  "title": "Last Checklist Item",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "checklist.md ends with an unchecked item. Report only its text, without the markdown checkbox prefix.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "checklist.md": [
+        "- [x] clone",
+        "- [x] install",
+        "- [ ] deploy"
+      ],
+      "README.md": [
+        "Last item text should be submitted as: deploy"
+      ]
+    },
+    "expected_submit": "deploy",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

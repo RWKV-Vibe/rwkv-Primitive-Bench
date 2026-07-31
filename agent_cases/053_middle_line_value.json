@@ -1,0 +1,24 @@
+{
+  "name": "middle_line_value",
+  "title": "Middle Line",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "notes.txt has exactly three lines. Report the middle line text only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "notes.txt": [
+        "alpha",
+        "bravo",
+        "charlie"
+      ]
+    },
+    "expected_submit": "bravo",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

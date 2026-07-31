@@ -1,0 +1,25 @@
+{
+  "name": "jwt_header_alg",
+  "title": "JWT Header Alg",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "token.jwt is header.payload.sig in base64url. Decode only the header JSON and report the alg value.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "token.jwt": [
+        "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxIn0.sig"
+      ],
+      "README.md": [
+        "Base64url-decode the first segment; read alg."
+      ]
+    },
+    "expected_submit": "HS256",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

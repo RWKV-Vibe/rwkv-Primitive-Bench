@@ -1,0 +1,25 @@
+{
+  "name": "clamp_report_score",
+  "title": "Clamped Score",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "raw_score.txt has a number. Clamp it to 0..100 and report the integer result.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "raw_score.txt": [
+        "150"
+      ],
+      "README.md": [
+        "If >100 use 100; if <0 use 0."
+      ]
+    },
+    "expected_submit": "100",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

@@ -1,0 +1,22 @@
+{
+  "name": "top_level_keys_count",
+  "title": "JSON Value Kind",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In meta.json, what JSON type is the value of key b? Final answer: one of object, array, number, string, boolean, or null.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "meta.json": [
+        "{\"a\":1,\"b\":{\"x\":9},\"c\":\"z\"}"
+      ]
+    },
+    "expected_submit": "object",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

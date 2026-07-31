@@ -1,0 +1,24 @@
+{
+  "name": "order_status_lookup",
+  "title": "Order Status",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What is the status of order ORD-200? Report only the status word.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "orders.jsonl": [
+        "{\"id\":\"ORD-100\",\"status\":\"shipped\"}",
+        "{\"id\":\"ORD-200\",\"status\":\"refunded\"}",
+        "{\"id\":\"ORD-300\",\"status\":\"open\"}"
+      ]
+    },
+    "expected_submit": "refunded",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

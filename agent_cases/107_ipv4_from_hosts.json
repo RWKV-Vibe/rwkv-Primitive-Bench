@@ -1,0 +1,24 @@
+{
+  "name": "ipv4_from_hosts",
+  "title": "Hosts File IP",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In hosts.txt, which IPv4 address maps to db.internal? Final answer: the IP only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "hosts.txt": [
+        "127.0.0.1 localhost",
+        "10.0.0.8 db.internal",
+        "10.0.0.9 cache.internal"
+      ]
+    },
+    "expected_submit": "10.0.0.8",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

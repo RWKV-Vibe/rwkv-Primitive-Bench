@@ -1,0 +1,27 @@
+{
+  "name": "count_http_500",
+  "title": "Count HTTP 500s",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Look at access.log — how many responses are HTTP 500? Report only the count.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "access.log": [
+        "10.0.0.1 GET / 200",
+        "10.0.0.2 GET /api 500",
+        "10.0.0.3 POST /api 201",
+        "10.0.0.4 GET /x 500",
+        "10.0.0.5 GET /y 404",
+        "10.0.0.6 GET /z 500"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}
