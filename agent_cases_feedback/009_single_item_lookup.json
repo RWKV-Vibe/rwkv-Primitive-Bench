@@ -1,0 +1,26 @@
+{
+  "name": "single_item_lookup",
+  "title": "Single Item Data Lookup",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In users.json, what is the email for user_id 42? Report the email only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "users.json": [
+        "[",
+        "  {\"user_id\": 7, \"email\": \"ada@example.com\", \"role\": \"admin\"},",
+        "  {\"user_id\": 42, \"email\": \"linus@example.org\", \"role\": \"editor\"},",
+        "  {\"user_id\": 99, \"email\": \"grace@example.net\", \"role\": \"viewer\"}",
+        "]"
+      ]
+    },
+    "expected_submit": "linus@example.org",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

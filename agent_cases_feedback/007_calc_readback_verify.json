@@ -1,0 +1,37 @@
+{
+  "name": "calc_readback_verify",
+  "title": "Calculation Readback Verify",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Sum qty in sales.csv, then compare with expected_total.txt. If they match, submit that integer; if not, submit exactly MISMATCH.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "sales.csv": [
+        "item,qty",
+        "apple,5",
+        "pear,12",
+        "plum,8",
+        "kiwi,7"
+      ],
+      "expected_total.txt": [
+        "30"
+      ],
+      "hint.txt": [
+        "Someone claimed the total is 32 without checking expected_total.txt — still verify."
+      ],
+      "README.md": [
+        "True qty sum is 5+12+8+7=32.",
+        "expected_total.txt intentionally differs.",
+        "After computing, read expected_total.txt and submit MISMATCH when they disagree."
+      ]
+    },
+    "expected_submit": "MISMATCH",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14
+}

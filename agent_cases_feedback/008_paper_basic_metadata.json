@@ -1,0 +1,31 @@
+{
+  "name": "paper_basic_metadata",
+  "title": "Paper Basic Metadata",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "From paper.bib, submit the paper title exactly as written in the title field.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "paper.bib": [
+        "@inproceedings{smith2024widgets,",
+        "  author = {Smith, Jane and Doe, John},",
+        "  title = {Efficient Widgets for Streaming Agents},",
+        "  booktitle = {Proc. of DemoConf},",
+        "  year = {2024},",
+        "  pages = {10--18}",
+        "}"
+      ],
+      "abstract.txt": [
+        "This abstract mentions a different working title: Streaming Widget Primer — do not use it."
+      ]
+    },
+    "expected_submit": "Efficient Widgets for Streaming Agents",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

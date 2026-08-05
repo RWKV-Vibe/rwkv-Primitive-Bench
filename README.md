@@ -214,6 +214,19 @@ To run a different case folder, pass it directly:
 python3 primitive_bench.py --cases my_own_folder_name --task all
 ```
 
+### Feedback suite (`agent_cases_feedback`)
+
+User-feedback cases (binding failures + strong baselines), 12 tasks:
+
+| # | Case | Focus |
+| --- | --- | --- |
+| 001–007 | Weak / binding | date event type, multi-entity date bind, version↔patch, Current/LTS/EOL, precise repo path, false premise → answer, calc read-back verify |
+| 008–012 | Strong baselines | paper metadata, single-item lookup, literal install command, summarize URL page fixture, encyclopedia direct answer |
+
+```bash
+python3 primitive_bench.py --cases agent_cases_feedback --task all
+```
+
 The runner loads only the selected folder. It does not scan sibling folders.
 
 Supported case sources inside the selected folder:

@@ -1,0 +1,30 @@
+{
+  "name": "multi_entity_date_bind",
+  "title": "Multi-Entity Date Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "products.json lists several products. What is the launch_date of Orion only? Report YYYY-MM-DD.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "products.json": [
+        "[",
+        "  {\"name\": \"Atlas\", \"launch_date\": \"2024-06-12\", \"owner\": \"team-a\"},",
+        "  {\"name\": \"Orion\", \"launch_date\": \"2025-09-08\", \"owner\": \"team-b\"},",
+        "  {\"name\": \"Nova\", \"launch_date\": \"2023-01-30\", \"owner\": \"team-c\"},",
+        "  {\"name\": \"Pulse\", \"launch_date\": \"2025-09-18\", \"owner\": \"team-b\"}",
+        "]"
+      ],
+      "README.md": [
+        "Bind dates to the named product. Nearby dates for other products are distractors."
+      ]
+    },
+    "expected_submit": "2025-09-08",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

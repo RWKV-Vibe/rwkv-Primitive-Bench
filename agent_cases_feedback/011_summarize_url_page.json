@@ -1,0 +1,33 @@
+{
+  "name": "summarize_url_page",
+  "title": "Summarize Specified URL Content",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "pages/status.example.com.txt is the fetched body of https://status.example.com. In one short phrase, what is the current incident title? Submit that title only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "pages/status.example.com.txt": [
+        "Example Cloud Status",
+        "",
+        "Current incident: Elevated API latency in region eu-west",
+        "Started: 2026-08-03 09:12 UTC",
+        "Impact: Partial degradation for read APIs",
+        "All other regions: operational"
+      ],
+      "pages/blog.example.com.txt": [
+        "Blog: We love low latency — not an incident title."
+      ],
+      "README.md": [
+        "Summarize only the specified status page fixture. Ignore the blog fixture."
+      ]
+    },
+    "expected_submit": "Elevated API latency in region eu-west",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

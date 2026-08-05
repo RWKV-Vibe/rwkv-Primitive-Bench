@@ -1,0 +1,31 @@
+{
+  "name": "date_event_type",
+  "title": "Date Event Type Distinction",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In timeline.md, what is the GA release date for WidgetX 2.0? Report only YYYY-MM-DD.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "timeline.md": [
+        "# WidgetX 2.0 schedule",
+        "",
+        "- Announced: 2025-11-01 (press blog, not GA)",
+        "- Beta freeze: 2026-01-15",
+        "- GA release: 2026-02-03",
+        "- Security advisory published: 2026-02-20",
+        "- EOL planned: 2028-02-03"
+      ],
+      "notes.txt": [
+        "Do not confuse announce / beta / advisory / EOL dates with the GA release date."
+      ]
+    },
+    "expected_submit": "2026-02-03",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}

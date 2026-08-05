@@ -1,0 +1,29 @@
+{
+  "name": "encyclopedia_direct",
+  "title": "Encyclopedia Direct Answer",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "According to wiki/dartmouth.md, in which year was Dartmouth College founded? Submit the four-digit year only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "wiki/dartmouth.md": [
+        "# Dartmouth College",
+        "",
+        "Dartmouth College is a private research university in Hanover, New Hampshire.",
+        "It was founded in 1769 by Eleazar Wheelock.",
+        "The institution is a member of the Ivy League."
+      ],
+      "wiki/distractor.md": [
+        "Harvard was founded in 1636 — wrong article for this question."
+      ]
+    },
+    "expected_submit": "1769",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12
+}
