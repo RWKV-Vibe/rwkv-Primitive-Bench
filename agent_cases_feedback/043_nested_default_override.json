@@ -1,0 +1,26 @@
+{
+  "name": "nested_default_override",
+  "title": "Nested Default Override",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read base.json then over.json. For key retries, over.json wins. Submit the retries integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "base.json": [
+        "{\"timeout\":30,\"retries\":2,\"region\":\"us\"}"
+      ],
+      "over.json": [
+        "{\"retries\":5,\"region\":\"eu\"}"
+      ]
+    },
+    "expected_submit": "5",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_multihop"
+}

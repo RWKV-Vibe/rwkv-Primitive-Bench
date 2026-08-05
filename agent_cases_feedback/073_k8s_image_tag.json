@@ -1,0 +1,28 @@
+{
+  "name": "k8s_image_tag",
+  "title": "K8s Image Tag",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "deploy.yaml: what image tag is used for container web? Submit tag only (after colon).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "deploy.yaml": [
+        "spec:",
+        "  containers:",
+        "    - name: web",
+        "      image: ghcr.io/acme/web:1.8.3",
+        "    - name: sidecar",
+        "      image: ghcr.io/acme/proxy:0.4.0"
+      ]
+    },
+    "expected_submit": "1.8.3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "title_case_name",
+  "title": "Title Case Name",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "name.txt is lowercase words. Submit Title Case: capitalize the first letter of each word, keep the rest lower.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "name.txt": [
+        "ada lovelace"
+      ]
+    },
+    "expected_submit": "Ada Lovelace",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

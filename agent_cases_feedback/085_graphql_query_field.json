@@ -1,0 +1,27 @@
+{
+  "name": "graphql_query_field",
+  "title": "GraphQL Query Field",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "query.txt shows a GraphQL selection. Under user { ... } there is one field. Submit that field name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "query.txt": [
+        "query {",
+        "  user(id: \"1\") {",
+        "    email",
+        "  }",
+        "}"
+      ]
+    },
+    "expected_submit": "email",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_ops"
+}

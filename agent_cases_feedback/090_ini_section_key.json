@@ -1,0 +1,27 @@
+{
+  "name": "ini_section_key",
+  "title": "INI Section Key",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "app.ini: in section [database], find host=VALUE and submit VALUE only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "app.ini": [
+        "[server]",
+        "bind=0.0.0.0",
+        "[database]",
+        "host=db.internal",
+        "port=5432"
+      ]
+    },
+    "expected_submit": "db.internal",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_ops"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "regex_capture_group",
+  "title": "Regex Capture Group",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "subject.txt contains the text user:NAME. Submit NAME.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "subject.txt": [
+        "login user:margo ok"
+      ]
+    },
+    "expected_submit": "margo",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_encoding"
+}

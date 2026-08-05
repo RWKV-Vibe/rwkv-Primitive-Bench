@@ -1,0 +1,23 @@
+{
+  "name": "unit_mixup_guard",
+  "title": "Unit Mixup Guard",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "distance.txt stores kilometers. Submit miles as integer floor(km*0.621371).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "distance.txt": [
+        "km=10"
+      ]
+    },
+    "expected_submit": "6",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

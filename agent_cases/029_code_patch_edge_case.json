@@ -52,5 +52,6 @@
     "scenario": "date_parser_patch"
   },
   "evaluation": "submit_after_tests",
-  "max_turns": 22
+  "max_turns": 22,
+  "suite": "original"
 }

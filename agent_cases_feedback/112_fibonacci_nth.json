@@ -1,0 +1,23 @@
+{
+  "name": "fibonacci_nth",
+  "title": "Fibonacci Nth",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Use F1=1, F2=1, Fn=F(n-1)+F(n-2). n.txt gives n. Submit F_n.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "n.txt": [
+        "8"
+      ]
+    },
+    "expected_submit": "21",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

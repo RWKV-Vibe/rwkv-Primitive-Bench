@@ -1,0 +1,26 @@
+{
+  "name": "css_var_value",
+  "title": "CSS Variable Value",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "theme.css defines --brand-bg. Submit the color value assigned to it (including #).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "theme.css": [
+        ":root {",
+        "  --brand-bg: #0b1f33;",
+        "  --brand-fg: #f5f7fa;",
+        "}"
+      ]
+    },
+    "expected_submit": "#0b1f33",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

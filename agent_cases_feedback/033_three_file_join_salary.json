@@ -1,0 +1,32 @@
+{
+  "name": "three_file_join_salary",
+  "title": "Three File Join Salary",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read people.csv to get Rio's emp_id. Then read pay.csv and submit Rio's salary integer. Do not guess other rows.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "people.csv": [
+        "name,emp_id",
+        "Rio,1",
+        "Sue,2",
+        "Pat,3"
+      ],
+      "pay.csv": [
+        "emp_id,salary",
+        "1,120000",
+        "2,90000",
+        "3,110000"
+      ]
+    },
+    "expected_submit": "120000",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 18,
+  "suite": "fb_multihop"
+}

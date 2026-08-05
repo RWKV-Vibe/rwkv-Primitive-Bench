@@ -1,0 +1,27 @@
+{
+  "name": "cve_package_bind",
+  "title": "CVE Package Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "advisory.md lists CVEs. Which package name is affected by CVE-2026-7788? Submit the package name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "advisory.md": [
+        "# Advisories",
+        "- CVE-2026-1100 affects libyaml (fixed in 0.2.6)",
+        "- CVE-2026-7788 affects openssl-lite (fixed in 1.1.1w)",
+        "- CVE-2026-7788-note: unrelated blog title mentioning curl",
+        "- CVE-2026-9001 affects curl (fixed in 8.5.0)"
+      ]
+    },
+    "expected_submit": "openssl-lite",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

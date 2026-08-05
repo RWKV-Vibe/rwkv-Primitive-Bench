@@ -1,0 +1,26 @@
+{
+  "name": "stale_cache_prefer_fresh",
+  "title": "Stale Cache Prefer Fresh",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read fresh.json for SKU-1 price (ignore cache.json). Submit the integer price.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "cache.json": [
+        "{\"SKU-1\": 50}"
+      ],
+      "fresh.json": [
+        "{\"SKU-1\": 55}"
+      ]
+    },
+    "expected_submit": "55",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_policy"
+}

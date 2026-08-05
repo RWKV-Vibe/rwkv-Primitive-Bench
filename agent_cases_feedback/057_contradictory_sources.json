@@ -1,0 +1,26 @@
+{
+  "name": "contradictory_sources",
+  "title": "Contradictory Sources Prefer Canon",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What is the API base URL? Prefer canon.md over draft.md. Submit the URL only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "draft.md": [
+        "API_BASE=https://draft.example.com"
+      ],
+      "canon.md": [
+        "API_BASE=https://api.example.com"
+      ]
+    },
+    "expected_submit": "https://api.example.com",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

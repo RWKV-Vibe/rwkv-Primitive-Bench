@@ -1,0 +1,26 @@
+{
+  "name": "case_insensitive_equal",
+  "title": "Lowercased String Equal",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "lower_a.txt and lower_b.txt are already lowercased. Submit YES if their contents are identical else NO.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "lower_a.txt": [
+        "alpha"
+      ],
+      "lower_b.txt": [
+        "alpha"
+      ]
+    },
+    "expected_submit": "YES",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 8,
+  "suite": "fb_policy"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "list_intersection_size",
+  "title": "List Intersection Size",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "data.json has arrays a and b. Submit how many distinct integers appear in both arrays.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "data.json": [
+        "{\"a\":[1,2,3],\"b\":[2,3,4]}"
+      ]
+    },
+    "expected_submit": "2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 14,
+  "suite": "fb_policy"
+}

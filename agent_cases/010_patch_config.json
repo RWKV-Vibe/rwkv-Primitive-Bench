@@ -22,5 +22,6 @@
     "scenario": "patch_config"
   },
   "evaluation": "submit_after_tests",
-  "max_turns": 14
+  "max_turns": 14,
+  "suite": "original"
 }

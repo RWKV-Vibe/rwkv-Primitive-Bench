@@ -1,0 +1,23 @@
+{
+  "name": "elasticsearch_shards",
+  "title": "Elasticsearch Shards",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "index.json settings: how many number_of_shards? Submit integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "index.json": [
+        "{\"settings\":{\"number_of_shards\":3,\"number_of_replicas\":1}}"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

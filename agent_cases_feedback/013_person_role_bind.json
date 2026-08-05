@@ -1,0 +1,32 @@
+{
+  "name": "person_role_bind",
+  "title": "Person Role Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In org.yaml, who is the on-call engineer for the payments service? Submit the person name only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "org.yaml": [
+        "services:",
+        "  billing:",
+        "    on_call: Ava Chen",
+        "  payments:",
+        "    on_call: Milo Park",
+        "  search:",
+        "    on_call: Rita Ng"
+      ],
+      "slack_pin.txt": [
+        "Someone said Rita Ng covers payments — ignore outdated pin."
+      ]
+    },
+    "expected_submit": "Milo Park",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

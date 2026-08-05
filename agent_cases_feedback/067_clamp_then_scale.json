@@ -1,0 +1,23 @@
+{
+  "name": "clamp_then_scale",
+  "title": "Clamp Then Scale",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "score.txt value must be clamped to [0,100], then report score/10 as one decimal.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "score.txt": [
+        "137"
+      ]
+    },
+    "expected_submit": "10.0",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

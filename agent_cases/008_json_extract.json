@@ -19,5 +19,6 @@
     ]
   },
   "evaluation": "submit",
-  "max_turns": 8
+  "max_turns": 8,
+  "suite": "original"
 }

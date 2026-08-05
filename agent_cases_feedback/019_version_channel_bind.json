@@ -1,0 +1,31 @@
+{
+  "name": "version_channel_bind",
+  "title": "Version Channel Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "channels.json maps channels to versions. What version is on the stable channel? Submit X.Y.Z only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "channels.json": [
+        "{",
+        "  \"nightly\": \"4.2.0-dev.88\",",
+        "  \"beta\": \"4.1.3\",",
+        "  \"stable\": \"4.1.1\",",
+        "  \"lts\": \"3.9.12\"",
+        "}"
+      ],
+      "blog.txt": [
+        "We just shipped 4.1.3 to beta — not stable."
+      ]
+    },
+    "expected_submit": "4.1.1",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

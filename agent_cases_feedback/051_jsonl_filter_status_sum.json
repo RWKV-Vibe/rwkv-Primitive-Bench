@@ -1,0 +1,26 @@
+{
+  "name": "jsonl_filter_status_sum",
+  "title": "JSONL Filter Status Sum",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Sum amount for status=ok in payments.jsonl. Submit with two decimals.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "payments.jsonl": [
+        "{\"status\":\"ok\",\"amount\":10.50}",
+        "{\"status\":\"fail\",\"amount\":99.00}",
+        "{\"status\":\"ok\",\"amount\":2.25}",
+        "{\"status\":\"ok\",\"amount\":0.25}"
+      ]
+    },
+    "expected_submit": "13.00",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_multihop"
+}

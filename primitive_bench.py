@@ -31,6 +31,16 @@ from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Any, Callable
 
+from suite_catalog import (
+    SUITE_LABELS,
+    SUITE_ORDER,
+    case_id_from_path,
+    cases_folder_key,
+    iter_suite_keys_for,
+    resolve_suite,
+    suite_label,
+)
+
 
 Json = dict[str, Any]
 
@@ -505,29 +515,14 @@ class Task:
     suite: str = "other"
 
 
-SUITE_LABELS = {
-    "original": "Original (001–030)",
-    "extra": "Extra (031–130)",
-    "open_probe": "Open probes",
-    "other": "Other",
-}
-
-
-def case_id_from_path(path: Path) -> int | None:
-    match = re.match(r"^(\d+)_", path.name)
-    return int(match.group(1)) if match else None
-
-
-def suite_for_case_id(case_id: int | None, mode: str = "benchmark") -> str:
-    if mode == "open_probe":
-        return "open_probe"
-    if case_id is None:
-        return "other"
-    if 1 <= case_id <= 30:
-        return "original"
-    if 31 <= case_id <= 130:
-        return "extra"
-    return "other"
+def suite_for_case_id(
+    case_id: int | None,
+    mode: str = "benchmark",
+    cases_dir: str | Path = "agent_cases",
+    explicit: str | None = None,
+) -> str:
+    """Back-compat wrapper around suite_catalog.resolve_suite."""
+    return resolve_suite(case_id, mode, cases_dir, explicit)
 
 
 def make_task_result(
@@ -2698,6 +2693,28 @@ def resolve_cases_dir(cases: str) -> Path:
     return requested if requested.is_absolute() else repo_root() / requested
 
 
+def resolve_cases_dirs(cases: str | Path) -> list[Path]:
+    """Resolve one or more case folders.
+
+    Accepts a single folder, comma-separated folders, or the alias ``all``
+    (``agent_cases`` + ``agent_cases_feedback``).
+    """
+    if isinstance(cases, Path):
+        return [cases if cases.is_absolute() else repo_root() / cases]
+    text = str(cases).strip()
+    if not text:
+        return [default_cases_dir()]
+    if text in {"all", "*"}:
+        parts = ["agent_cases", "agent_cases_feedback"]
+    else:
+        parts = [part.strip() for part in text.split(",") if part.strip()]
+    dirs = [resolve_cases_dir(part) for part in parts]
+    missing = [str(path) for path in dirs if not path.is_dir()]
+    if missing:
+        raise ValueError("case folder not found: " + ", ".join(missing))
+    return dirs
+
+
 def load_case_text(value: Any) -> str:
     if isinstance(value, str):
         return value
@@ -2851,6 +2868,7 @@ def load_case(path: Path) -> Task:
     if not isinstance(max_turns, int):
         raise ValueError(f"{path}: max_turns must be an integer")
     case_id = case_id_from_path(path)
+    explicit_suite = raw.get("suite") if isinstance(raw.get("suite"), str) else None
     return Task(
         name=name,
         title=title,
@@ -2862,7 +2880,7 @@ def load_case(path: Path) -> Task:
         max_turns=max_turns,
         mode=mode,
         case_id=case_id,
-        suite=suite_for_case_id(case_id, mode),
+        suite=resolve_suite(case_id, mode, path.parent, explicit_suite),
     )
 
 
@@ -2943,18 +2961,17 @@ def load_python_cases(directory: Path) -> list[Task]:
 
 
 def iter_case_paths(cases_dir: str | Path) -> list[Path]:
-    directory = resolve_cases_dir(str(cases_dir)) if not isinstance(cases_dir, Path) else cases_dir
-    if not directory.is_dir():
-        raise ValueError(f"case folder not found: {directory}")
-    return sorted(directory.glob("*.json"))
+    paths: list[Path] = []
+    for directory in resolve_cases_dirs(cases_dir):
+        paths.extend(sorted(directory.glob("*.json")))
+    return paths
 
 
 def load_all_cases(cases_dir: str | Path = "agent_cases") -> list[Task]:
-    directory = resolve_cases_dir(str(cases_dir)) if not isinstance(cases_dir, Path) else cases_dir
-    if not directory.is_dir():
-        raise ValueError(f"case folder not found: {directory}")
-    cases = [load_case(path) for path in sorted(directory.glob("*.json"))]
-    cases.extend(load_python_cases(directory))
+    cases: list[Task] = []
+    for directory in resolve_cases_dirs(cases_dir):
+        cases.extend(load_case(path) for path in sorted(directory.glob("*.json")))
+        cases.extend(load_python_cases(directory))
     names: set[str] = set()
     for case in cases:
         if case.name in names:
@@ -4441,13 +4458,22 @@ def event_from_json(value: Json) -> Event:
     )
 
 
-def result_from_json(value: Json) -> TaskResult:
+def result_from_json(value: Json, cases_dir: str | Path = "agent_cases") -> TaskResult:
     case_id = value.get("case_id")
     if not isinstance(case_id, int):
         case_id = None
-    suite = value.get("suite")
-    if not isinstance(suite, str) or not suite:
-        suite = suite_for_case_id(case_id, "open_probe" if value.get("mode") == "open_probe" else "benchmark")
+    mode = "open_probe" if value.get("mode") == "open_probe" else "benchmark"
+    stored = value.get("suite") if isinstance(value.get("suite"), str) else None
+    # Prefer a concrete stored suite (needed when multiple case folders share numeric ids).
+    if stored and stored in SUITE_LABELS and stored != "other":
+        suite = stored
+    else:
+        folder_keys = [cases_folder_key(path) for path in resolve_cases_dirs(cases_dir)]
+        suite = "other"
+        if len(folder_keys) == 1:
+            suite = resolve_suite(case_id, mode, folder_keys[0], explicit=None)
+        elif value.get("name"):
+            _, suite = lookup_suite_by_name(str(value.get("name")), cases_dir)
     return TaskResult(
         name=str(value.get("name", "")),
         title=str(value.get("title", "")),
@@ -4466,16 +4492,17 @@ def result_from_json(value: Json) -> TaskResult:
 def lookup_suite_by_name(name: str, cases_dir: str | Path = "agent_cases") -> tuple[int | None, str]:
     """Best-effort suite tagging for older results.json without case_id/suite fields."""
     try:
-        directory = resolve_cases_dir(str(cases_dir)) if not isinstance(cases_dir, Path) else cases_dir
-        for path in directory.glob("*.json"):
-            try:
-                raw = json.loads(path.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
-                continue
-            if isinstance(raw, dict) and raw.get("name") == name:
-                case_id = case_id_from_path(path)
-                mode = str(raw.get("mode", "benchmark"))
-                return case_id, suite_for_case_id(case_id, mode)
+        for directory in resolve_cases_dirs(cases_dir):
+            for path in directory.glob("*.json"):
+                try:
+                    raw = json.loads(path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    continue
+                if isinstance(raw, dict) and raw.get("name") == name:
+                    case_id = case_id_from_path(path)
+                    mode = str(raw.get("mode", "benchmark"))
+                    explicit = raw.get("suite") if isinstance(raw.get("suite"), str) else None
+                    return case_id, resolve_suite(case_id, mode, directory, explicit)
     except ValueError:
         pass
     return None, "other"
@@ -4491,11 +4518,13 @@ def render_html_from_results_json(results_json: Json) -> str:
     for raw in raw_results:
         if not isinstance(raw, dict):
             continue
-        result = result_from_json(raw)
-        if result.suite == "other" and result.case_id is None and result.name:
+        result = result_from_json(raw, cases_dir)
+        if (result.suite == "other" or result.case_id is None) and result.name:
             case_id, suite = lookup_suite_by_name(result.name, cases_dir)
-            result.case_id = case_id
-            result.suite = suite
+            if result.case_id is None:
+                result.case_id = case_id
+            if result.suite == "other":
+                result.suite = suite
         results.append(result)
     return render_html(results, run_meta)
 
@@ -4531,22 +4560,22 @@ def render_html(results: list[TaskResult], run_meta: Json) -> str:
     report_title = f"Primitive Bench - {model} - {protocol} - {task_scope}"
     outcome_word = "answered" if mode == "open_probe" else "passed"
 
-    suite_order = ["original", "extra", "open_probe", "other"]
-    grouped: dict[str, list[TaskResult]] = {key: [] for key in suite_order}
+    suite_keys = iter_suite_keys_for({result.suite for result in results})
+    grouped: dict[str, list[TaskResult]] = {key: [] for key in suite_keys}
     for result in results:
-        grouped.setdefault(result.suite if result.suite in grouped else "other", []).append(result)
+        grouped.setdefault(result.suite, []).append(result)
 
     sidebar_parts: list[str] = []
     main_parts: list[str] = []
     suite_summaries: list[str] = []
 
-    for suite_key in suite_order:
+    for suite_key in suite_keys:
         suite_results = grouped.get(suite_key) or []
         if not suite_results:
             continue
         suite_passed = sum(1 for item in suite_results if item.passed)
         suite_total = len(suite_results)
-        label = SUITE_LABELS.get(suite_key, suite_key)
+        label = suite_label(suite_key)
         suite_summaries.append(f"{html_escape(label)}: {suite_passed}/{suite_total}")
         sidebar_parts.append(
             f"<div class='suite-block suite-{html_escape(suite_key)}'>"
@@ -4724,7 +4753,11 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
         default="auto",
         help="Tool-call envelope for completion-react. auto uses g1g fenced JSON for g1g models and g1h XML otherwise.",
     )
-    parser.add_argument("--cases", default="agent_cases", help="Folder containing case JSON files")
+    parser.add_argument(
+        "--cases",
+        default="agent_cases",
+        help="Case folder(s): one name, comma-separated list, or 'all' (= agent_cases + agent_cases_feedback)",
+    )
     parser.add_argument("--task", default="all", help="Task to run")
     parser.add_argument("--open-probe", default=None, help="Run open-ended host/repo probe(s) instead of exact-submit benchmark tasks")
     parser.add_argument("--out", default=None, help="Output directory; default runs/<timestamp>")
@@ -4932,13 +4965,12 @@ def main(argv: list[str]) -> int:
     by_suite: dict[str, list[TaskResult]] = {}
     for result in results:
         by_suite.setdefault(result.suite, []).append(result)
-    for suite_key in ("original", "extra", "open_probe", "other"):
+    for suite_key in iter_suite_keys_for(set(by_suite)):
         suite_results = by_suite.get(suite_key) or []
         if not suite_results:
             continue
         suite_passed = sum(1 for item in suite_results if item.passed)
-        label = SUITE_LABELS.get(suite_key, suite_key)
-        print(f"  {label}: {suite_passed}/{len(suite_results)}")
+        print(f"  {suite_label(suite_key)}: {suite_passed}/{len(suite_results)}")
     return 0 if passed == len(results) else 2
 
 

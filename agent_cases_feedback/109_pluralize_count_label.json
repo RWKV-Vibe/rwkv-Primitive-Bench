@@ -1,0 +1,23 @@
+{
+  "name": "pluralize_count_label",
+  "title": "Pluralize Count Label",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Format as '<n> item' or '<n> items' using count.txt. Submit the phrase.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "count.txt": [
+        "1"
+      ]
+    },
+    "expected_submit": "1 item",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "palindrome_check",
+  "title": "Palindrome Check",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "phrase.txt: ignore spaces and case. Does it read the same forward and backward? Submit YES or NO.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "phrase.txt": [
+        "Never odd or even"
+      ]
+    },
+    "expected_submit": "YES",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

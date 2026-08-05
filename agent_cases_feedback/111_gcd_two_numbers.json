@@ -1,0 +1,23 @@
+{
+  "name": "gcd_two_numbers",
+  "title": "GCD Two Numbers",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "nums.txt has two integers. Submit their greatest common divisor (GCD).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "nums.txt": [
+        "48 18"
+      ]
+    },
+    "expected_submit": "6",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

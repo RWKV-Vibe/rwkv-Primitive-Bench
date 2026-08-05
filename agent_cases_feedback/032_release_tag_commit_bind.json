@@ -1,0 +1,26 @@
+{
+  "name": "release_tag_commit_bind",
+  "title": "Release Tag Commit Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "tags.txt: which commit sha does tag v2.5.0 point to? Submit the 7-char sha.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "tags.txt": [
+        "v2.4.9  a1b2c3d",
+        "v2.5.0  e4f5a6b",
+        "v2.5.0-rc1  9998887",
+        "v2.5.1  c0ffee1"
+      ]
+    },
+    "expected_submit": "e4f5a6b",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

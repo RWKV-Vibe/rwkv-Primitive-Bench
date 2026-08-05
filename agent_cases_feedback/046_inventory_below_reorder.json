@@ -1,0 +1,27 @@
+{
+  "name": "inventory_below_reorder",
+  "title": "Inventory Below Reorder",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "stock.csv rows are sku,on_hand,reorder_point. Submit how many rows satisfy on_hand < reorder_point. Arithmetic is small; submit after counting.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "stock.csv": [
+        "sku,on_hand,reorder_point",
+        "A,4,10",
+        "B,12,10",
+        "C,0,1",
+        "D,10,10"
+      ]
+    },
+    "expected_submit": "2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 18,
+  "suite": "fb_multihop"
+}

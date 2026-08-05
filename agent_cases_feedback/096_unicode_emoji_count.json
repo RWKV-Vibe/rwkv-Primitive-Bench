@@ -1,0 +1,23 @@
+{
+  "name": "unicode_emoji_count",
+  "title": "Unicode Emoji Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "reactions.txt uses the token <UP> for thumbs up. Submit how many <UP> tokens appear.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "reactions.txt": [
+        "ok <UP> yes <UP> <UP> maybe"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

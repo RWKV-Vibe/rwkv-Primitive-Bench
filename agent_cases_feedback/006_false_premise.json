@@ -13,10 +13,6 @@
         "AA-100,Anchor,12.50",
         "BB-200,Bolt,3.25",
         "CC-300,Clamp,7.80"
-      ],
-      "README.md": [
-        "The prompt may assume a SKU that is not in inventory.csv.",
-        "If the named SKU is missing, submit NONE — do not invent a price from a nearby row."
       ]
     },
     "expected_submit": "NONE",
@@ -25,5 +21,6 @@
     ]
   },
   "evaluation": "submit",
-  "max_turns": 12
+  "max_turns": 12,
+  "suite": "fb_weak_binding"
 }

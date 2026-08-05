@@ -1,0 +1,28 @@
+{
+  "name": "sla_tier_response_hours",
+  "title": "SLA Tier Response Hours",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "sla.md: for priority P1, what is the response time in hours? Submit the integer only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "sla.md": [
+        "# SLA",
+        "| Priority | Response hours | Resolve hours |",
+        "| P0 | 1 | 4 |",
+        "| P1 | 4 | 24 |",
+        "| P2 | 24 | 72 |",
+        "Marketing one-pager wrongly says P1 is 1 hour — trust the table."
+      ]
+    },
+    "expected_submit": "4",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

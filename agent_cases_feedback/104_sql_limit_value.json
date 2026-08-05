@@ -1,0 +1,26 @@
+{
+  "name": "sql_limit_value",
+  "title": "SQL Limit Value",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "query.sql: what is the LIMIT value? Submit the integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "query.sql": [
+        "SELECT id, name FROM users",
+        "WHERE active = 1",
+        "ORDER BY id",
+        "LIMIT 25 OFFSET 50;"
+      ]
+    },
+    "expected_submit": "25",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

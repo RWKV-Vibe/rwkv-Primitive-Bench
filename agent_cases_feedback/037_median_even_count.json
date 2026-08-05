@@ -1,0 +1,26 @@
+{
+  "name": "median_even_count",
+  "title": "Median Even Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "nums.txt has one integer per line. Submit the median as integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "nums.txt": [
+        "3",
+        "9",
+        "1",
+        "7"
+      ]
+    },
+    "expected_submit": "5",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_multihop"
+}

@@ -1,0 +1,27 @@
+{
+  "name": "haproxy_backend_balance",
+  "title": "HAProxy Backend Balance",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "haproxy.cfg: what balance algorithm is set for backend web? Submit the algorithm name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "haproxy.cfg": [
+        "backend web",
+        "  balance roundrobin",
+        "  server s1 10.0.0.1:80",
+        "backend api",
+        "  balance leastconn"
+      ]
+    },
+    "expected_submit": "roundrobin",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

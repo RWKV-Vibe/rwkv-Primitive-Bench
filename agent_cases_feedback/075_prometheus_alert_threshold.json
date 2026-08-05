@@ -1,0 +1,29 @@
+{
+  "name": "prometheus_alert_threshold",
+  "title": "Prometheus Alert Threshold",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "alerts.yml: what is the numeric threshold in expr for HighCPU? Submit the number only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "alerts.yml": [
+        "groups:",
+        "- name: node",
+        "  rules:",
+        "  - alert: HighCPU",
+        "    expr: avg(cpu_usage) > 0.85",
+        "  - alert: LowDisk",
+        "    expr: disk_free < 0.10"
+      ]
+    },
+    "expected_submit": "0.85",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

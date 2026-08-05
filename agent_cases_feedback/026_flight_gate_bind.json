@@ -1,0 +1,27 @@
+{
+  "name": "flight_gate_bind",
+  "title": "Flight Gate Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "board.csv: which gate is assigned to flight AA412 on 2026-08-05? Submit the gate only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "board.csv": [
+        "flight,date,gate,status",
+        "AA412,2026-08-04,A3,departed",
+        "AA412,2026-08-05,B7,boarding",
+        "AA418,2026-08-05,B7,delayed",
+        "BA100,2026-08-05,C1,on-time"
+      ]
+    },
+    "expected_submit": "B7",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

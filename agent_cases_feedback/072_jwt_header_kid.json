@@ -1,0 +1,23 @@
+{
+  "name": "jwt_header_kid",
+  "title": "JWT Header Kid",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "token.header.json is the decoded JWT header. Submit the kid value.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "token.header.json": [
+        "{\"alg\":\"RS256\",\"kid\":\"key-2026-08\",\"typ\":\"JWT\"}"
+      ]
+    },
+    "expected_submit": "key-2026-08",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

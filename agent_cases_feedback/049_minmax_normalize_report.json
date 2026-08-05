@@ -1,0 +1,26 @@
+{
+  "name": "minmax_normalize_report",
+  "title": "Minmax Normalize Report",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "values.txt: report the minmax-normalized value of 7 to 2 decimal places (min=1,max=9).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "values.txt": [
+        "1",
+        "7",
+        "9",
+        "3"
+      ]
+    },
+    "expected_submit": "0.75",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_multihop"
+}

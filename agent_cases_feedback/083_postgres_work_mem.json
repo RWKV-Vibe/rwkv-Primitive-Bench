@@ -1,0 +1,25 @@
+{
+  "name": "postgres_work_mem",
+  "title": "Postgres Work Mem",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "postgresql.conf: what is work_mem? Submit the value including unit as written.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "postgresql.conf": [
+        "shared_buffers = 128MB",
+        "work_mem = 16MB",
+        "maintenance_work_mem = 64MB"
+      ]
+    },
+    "expected_submit": "16MB",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

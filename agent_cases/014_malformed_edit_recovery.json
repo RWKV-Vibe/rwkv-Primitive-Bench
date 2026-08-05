@@ -22,5 +22,6 @@
     "scenario": "malformed_edit_recovery"
   },
   "evaluation": "file_changed_submit",
-  "max_turns": 14
+  "max_turns": 14,
+  "suite": "original"
 }

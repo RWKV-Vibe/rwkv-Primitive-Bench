@@ -1,0 +1,30 @@
+{
+  "name": "percentile_nearest_rank",
+  "title": "Percentile Nearest Rank",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "vals.txt has 8 sorted numbers one per line. Submit the 6th number (1-based).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "vals.txt": [
+        "10",
+        "20",
+        "30",
+        "40",
+        "50",
+        "60",
+        "70",
+        "80"
+      ]
+    },
+    "expected_submit": "60",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_multihop"
+}

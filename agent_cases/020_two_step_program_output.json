@@ -31,5 +31,6 @@
     "scenario": "two_step_program_output"
   },
   "evaluation": "submit",
-  "max_turns": 12
+  "max_turns": 12,
+  "suite": "original"
 }

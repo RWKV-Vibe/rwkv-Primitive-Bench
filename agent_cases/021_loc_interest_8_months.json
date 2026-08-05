@@ -42,5 +42,6 @@
     "scorer": "numeric_submit_tolerance",
     "tolerance": 1.5
   },
-  "max_turns": 18
+  "max_turns": 18,
+  "suite": "original"
 }

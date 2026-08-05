@@ -1,0 +1,23 @@
+{
+  "name": "timezone_local_convert",
+  "title": "Timezone Local Convert",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "utc_time.txt is HH:MM in UTC. Local time is UTC minus 5 hours (same minutes). Submit local HH:MM.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "utc_time.txt": [
+        "18:30"
+      ]
+    },
+    "expected_submit": "13:30",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_entity_bind"
+}

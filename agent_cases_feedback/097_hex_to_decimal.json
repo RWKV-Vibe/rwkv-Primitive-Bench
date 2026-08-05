@@ -1,0 +1,23 @@
+{
+  "name": "hex_to_decimal",
+  "title": "Hex To Decimal",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "code.txt has a hex value like 0xFF. Submit decimal integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "code.txt": [
+        "0x2A"
+      ]
+    },
+    "expected_submit": "42",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

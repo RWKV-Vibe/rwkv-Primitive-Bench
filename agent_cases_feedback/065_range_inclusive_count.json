@@ -1,0 +1,26 @@
+{
+  "name": "range_inclusive_count",
+  "title": "Range Inclusive Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "nums.txt: how many numbers are inside the closed interval from 10 to 20? Submit the count.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "nums.txt": [
+        "10",
+        "15",
+        "20",
+        "25"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_policy"
+}

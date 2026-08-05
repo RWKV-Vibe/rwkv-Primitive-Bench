@@ -1,0 +1,28 @@
+{
+  "name": "locale_currency_bind",
+  "title": "Locale Currency Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In storefront.json, what currency code is used for locale fr-FR? Submit the 3-letter code.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "storefront.json": [
+        "{",
+        "  \"en-US\": {\"currency\": \"USD\", \"tax\": 0.08},",
+        "  \"fr-FR\": {\"currency\": \"EUR\", \"tax\": 0.20},",
+        "  \"ja-JP\": {\"currency\": \"JPY\", \"tax\": 0.10},",
+        "  \"fr-CA\": {\"currency\": \"CAD\", \"tax\": 0.15}",
+        "}"
+      ]
+    },
+    "expected_submit": "EUR",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

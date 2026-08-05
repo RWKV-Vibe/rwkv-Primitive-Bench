@@ -1,0 +1,23 @@
+{
+  "name": "relative_path_token",
+  "title": "Relative Path Token",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "secret token is in token.txt at project root. Submit the token string only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "token.txt": [
+        "tok_9f3a"
+      ]
+    },
+    "expected_submit": "tok_9f3a",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

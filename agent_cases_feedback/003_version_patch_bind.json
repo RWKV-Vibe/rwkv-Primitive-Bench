@@ -17,9 +17,6 @@
         "- 3.2.5 — unrelated packaging fix",
         "- 3.3.1 — patch for CVE-2026-4411 on the 3.3 line",
         "- 4.0.0 — major rewrite"
-      ],
-      "README.md": [
-        "A CVE can appear on multiple lines. Bind the CVE to the requested major.minor line."
       ]
     },
     "expected_submit": "3.2.4",
@@ -28,5 +25,6 @@
     ]
   },
   "evaluation": "submit",
-  "max_turns": 12
+  "max_turns": 12,
+  "suite": "fb_weak_binding"
 }

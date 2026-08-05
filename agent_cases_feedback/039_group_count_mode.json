@@ -1,0 +1,29 @@
+{
+  "name": "group_count_mode",
+  "title": "Group Count Mode",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "colors.txt: which color appears most often? Submit that color.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "colors.txt": [
+        "red",
+        "blue",
+        "red",
+        "green",
+        "blue",
+        "red",
+        "yellow"
+      ]
+    },
+    "expected_submit": "red",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_multihop"
+}

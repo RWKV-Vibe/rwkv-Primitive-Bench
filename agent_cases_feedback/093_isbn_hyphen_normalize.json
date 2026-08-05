@@ -1,0 +1,23 @@
+{
+  "name": "isbn_hyphen_normalize",
+  "title": "ISBN Hyphen Normalize",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "isbn.txt contains an ISBN-13 with hyphens. Submit only the digits, no hyphens.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "isbn.txt": [
+        "978-0-306-40615-7"
+      ]
+    },
+    "expected_submit": "9780306406157",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

@@ -21,13 +21,13 @@ Dependencies:
 
 ## What It Tests
 
-The default suite has **130** file-backed benchmark tasks under `agent_cases/` (one folder; the HTML report groups them visually):
+The default suite has **134** file-backed tasks under `agent_cases/` (HTML report groups them by suite):
 
-- **001–030 Original**: hard suite (honest natural prompts; the ~19/30 baseline set)
-- **031–130 Extra**: 100 additional everyday agent tasks (CSV/JSON/config/log/etc.)
-- **131–134 Open probes**: optional open-ended prompts (not scored via `submit`)
+- **Original (001–030)**: hard suite (honest natural prompts; the ~19/30 baseline set)
+- **Extra (031–130)**: 100 additional everyday agent tasks (CSV/JSON/config/log/etc.)
+- **Open probes (131–134)**: optional open-ended prompts (not scored via `submit`)
 
-Run all together with `--task all`. The report sidebar/main view shows separate pass rates for Original vs Extra.
+A second folder `agent_cases_feedback/` has **112** feedback-driven tasks with finer HTML categories (weak binding, strong baselines, entity bind, multi-hop, policy, ops/formats, encoding/web/math). Suite keys and ranges live in `suite_catalog.py` so the runner/HTML do not hard-code folder taxonomy.
 
 Coverage includes:
 
@@ -214,14 +214,29 @@ To run a different case folder, pass it directly:
 python3 primitive_bench.py --cases my_own_folder_name --task all
 ```
 
+Run **all** built-in suites together (Original/Extra/Open probes + Feedback categories) in one report:
+
+```bash
+python3 primitive_bench.py --cases all --task all
+# equivalent:
+python3 primitive_bench.py --cases agent_cases,agent_cases_feedback --task all
+```
+
 ### Feedback suite (`agent_cases_feedback`)
 
-User-feedback cases (binding failures + strong baselines), 12 tasks:
+User-feedback + extended agent skills suite (**112** tasks). Inspired by common agent eval axes (binding/entity linking, τ-bench-style policy, GAIA-like multi-hop, ops config extraction, abstention):
 
-| # | Case | Focus |
-| --- | --- | --- |
-| 001–007 | Weak / binding | date event type, multi-entity date bind, version↔patch, Current/LTS/EOL, precise repo path, false premise → answer, calc read-back verify |
-| 008–012 | Strong baselines | paper metadata, single-item lookup, literal install command, summarize URL page fixture, encyclopedia direct answer |
+| # | Focus |
+| --- | --- |
+| 001–007 | Weak / binding (date event type, multi-entity date, version↔patch, LTS/EOL, repo path, false premise, calc read-back) |
+| 008–012 | Strong baselines (paper metadata, single-item lookup, install command, URL summary, encyclopedia) |
+| 013–032 | Entity / temporal binding (on-call, joins, CVE, gates, DNS, release tags, …) |
+| 033–052 | Multi-hop / aggregation (3-file join, tie-break, median, JSONL filter, schema mismatch, …) |
+| 053–072 | Policy / abstain / verify (refund cap, VIP, UNKNOWN/ABSENT, injection guard, set ops, …) |
+| 073–092 | Ops & formats (K8s/TF/Prom/Nginx/Compose/Redis/OpenAPI/TOML/XML, …) |
+| 093–112 | Encoding / web / math (ISBN/DOI, CIDR, URL/HTML/CSS, regex, gcd/fibonacci, …) |
+
+Latest local score (`rwkv7-g1i`, `batch-completion-react`, temperature 0): **112/112** — see `runs/feedback-best/`.
 
 ```bash
 python3 primitive_bench.py --cases agent_cases_feedback --task all

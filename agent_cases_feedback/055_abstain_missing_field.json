@@ -1,0 +1,23 @@
+{
+  "name": "abstain_missing_field",
+  "title": "Abstain Missing Field",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "What is the fax number in contact.json? If absent, submit UNKNOWN.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "contact.json": [
+        "{\"email\":\"ops@example.com\",\"phone\":\"+1-555-0100\"}"
+      ]
+    },
+    "expected_submit": "UNKNOWN",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

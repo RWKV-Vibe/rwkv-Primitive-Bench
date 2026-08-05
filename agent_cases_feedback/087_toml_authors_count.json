@@ -1,0 +1,26 @@
+{
+  "name": "toml_authors_count",
+  "title": "TOML Authors Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "How many authors are listed in Cargo.toml? Submit the count.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "Cargo.toml": [
+        "[package]",
+        "name = \"demo\"",
+        "authors = [\"Ada\", \"Bob\", \"Cyd\"]",
+        "version = \"0.1.0\""
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

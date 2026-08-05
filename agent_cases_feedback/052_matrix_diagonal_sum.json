@@ -1,0 +1,24 @@
+{
+  "name": "matrix_diagonal_sum",
+  "title": "Matrix Diagonal Sum",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "grid.csv is 2x2 numbers. Submit a single integer: top-left + bottom-right.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "grid.csv": [
+        "1,2",
+        "3,4"
+      ]
+    },
+    "expected_submit": "5",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_multihop"
+}

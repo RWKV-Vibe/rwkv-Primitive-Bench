@@ -1,0 +1,29 @@
+{
+  "name": "license_file_spdx_pair",
+  "title": "License File SPDX Pair",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "manifest.json lists packages. What SPDX id does package ripple use? Submit the SPDX expression only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "manifest.json": [
+        "{",
+        "  \"packages\": [",
+        "    {\"name\": \"wave\", \"license\": \"MIT\"},",
+        "    {\"name\": \"ripple\", \"license\": \"Apache-2.0\"},",
+        "    {\"name\": \"tide\", \"license\": \"BSD-3-Clause\"}",
+        "  ]",
+        "}"
+      ]
+    },
+    "expected_submit": "Apache-2.0",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

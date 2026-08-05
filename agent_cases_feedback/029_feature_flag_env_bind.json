@@ -1,0 +1,26 @@
+{
+  "name": "feature_flag_env_bind",
+  "title": "Feature Flag Env Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "flags.yaml: submit the staging value for dark_mode as lowercase true or false.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "flags.yaml": [
+        "dark_mode:",
+        "  production: false",
+        "  staging: true",
+        "  development: true"
+      ]
+    },
+    "expected_submit": "true",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_entity_bind"
+}

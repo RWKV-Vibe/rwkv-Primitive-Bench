@@ -1,0 +1,24 @@
+{
+  "name": "crontab_hour_field",
+  "title": "Crontab Hour Field",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "crontab.txt line for backup.sh uses standard cron fields minute hour day month weekday. Submit the hour field value.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "crontab.txt": [
+        "5 2 * * * /usr/local/bin/backup.sh",
+        "*/10 * * * * /usr/local/bin/heartbeat.sh"
+      ]
+    },
+    "expected_submit": "2",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

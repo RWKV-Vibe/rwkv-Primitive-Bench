@@ -1,0 +1,23 @@
+{
+  "name": "ipv4_last_octet",
+  "title": "IPv4 Last Octet",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "From ip.txt, submit the last octet as integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "ip.txt": [
+        "10.20.30.44"
+      ]
+    },
+    "expected_submit": "44",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

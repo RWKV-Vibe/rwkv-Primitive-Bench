@@ -1,0 +1,23 @@
+{
+  "name": "binary_bit_count",
+  "title": "Binary Bit Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "bits.txt contains only 0 and 1 characters. Submit how many 1 characters there are (do not submit the string length).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "bits.txt": [
+        "1101011"
+      ]
+    },
+    "expected_submit": "5",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_encoding"
+}

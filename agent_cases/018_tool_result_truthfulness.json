@@ -20,5 +20,6 @@
     "scenario": "tool_result_truthfulness"
   },
   "evaluation": "truthfulness",
-  "max_turns": 8
+  "max_turns": 8,
+  "suite": "original"
 }

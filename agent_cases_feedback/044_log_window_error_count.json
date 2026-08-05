@@ -1,0 +1,28 @@
+{
+  "name": "log_window_error_count",
+  "title": "Log Window Error Count",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Count ERROR lines with timestamp between 10:00 and 10:05 inclusive in app.log. Submit the count.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "app.log": [
+        "09:59:50 INFO boot",
+        "10:00:00 ERROR disk",
+        "10:02:11 ERROR net",
+        "10:05:00 ERROR auth",
+        "10:05:01 WARN slow",
+        "10:06:00 ERROR late"
+      ]
+    },
+    "expected_submit": "3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_multihop"
+}

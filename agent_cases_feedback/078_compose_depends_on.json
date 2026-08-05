@@ -1,0 +1,29 @@
+{
+  "name": "compose_depends_on",
+  "title": "Compose Depends On",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "compose.yml service api lists depends_on. Submit the depended service name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "compose.yml": [
+        "services:",
+        "  db:",
+        "    image: postgres:16",
+        "  api:",
+        "    image: api:latest",
+        "    depends_on:",
+        "      - db"
+      ]
+    },
+    "expected_submit": "db",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_ops"
+}

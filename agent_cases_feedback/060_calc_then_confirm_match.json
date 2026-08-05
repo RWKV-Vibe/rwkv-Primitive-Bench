@@ -1,0 +1,29 @@
+{
+  "name": "calc_then_confirm_match",
+  "title": "Calc Then Confirm Match",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Multiply a.txt * b.txt, confirm against product.txt. Submit the product if match else MISMATCH.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "a.txt": [
+        "12"
+      ],
+      "b.txt": [
+        "7"
+      ],
+      "product.txt": [
+        "84"
+      ]
+    },
+    "expected_submit": "84",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

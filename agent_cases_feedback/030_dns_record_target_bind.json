@@ -1,0 +1,25 @@
+{
+  "name": "dns_record_target_bind",
+  "title": "DNS Record Target Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "In zone.txt, submit the CNAME target hostname for api.example.com.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "zone.txt": [
+        "www.example.com CNAME pages.example.net",
+        "api.example.com CNAME ingress-prod.example.net",
+        "api.staging.example.com CNAME ingress-stage.example.net"
+      ]
+    },
+    "expected_submit": "ingress-prod.example.net",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

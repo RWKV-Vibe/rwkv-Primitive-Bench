@@ -9,5 +9,6 @@
     "kind": "host_repo_snapshot"
   },
   "evaluation": "open_probe",
-  "max_turns": 8
+  "max_turns": 8,
+  "suite": "open_probe"
 }

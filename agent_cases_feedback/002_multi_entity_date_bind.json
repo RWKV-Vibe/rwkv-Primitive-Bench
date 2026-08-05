@@ -15,9 +15,6 @@
         "  {\"name\": \"Nova\", \"launch_date\": \"2023-01-30\", \"owner\": \"team-c\"},",
         "  {\"name\": \"Pulse\", \"launch_date\": \"2025-09-18\", \"owner\": \"team-b\"}",
         "]"
-      ],
-      "README.md": [
-        "Bind dates to the named product. Nearby dates for other products are distractors."
       ]
     },
     "expected_submit": "2025-09-08",
@@ -26,5 +23,6 @@
     ]
   },
   "evaluation": "submit",
-  "max_turns": 12
+  "max_turns": 12,
+  "suite": "fb_weak_binding"
 }

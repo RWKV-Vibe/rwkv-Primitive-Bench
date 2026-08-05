@@ -1,0 +1,24 @@
+{
+  "name": "duration_between_events",
+  "title": "Duration Between Events",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "events.txt shows start_hour and end_hour in 24h UTC. Submit end_hour minus start_hour as an integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "events.txt": [
+        "start_hour=8",
+        "end_hour=17"
+      ]
+    },
+    "expected_submit": "9",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_entity_bind"
+}

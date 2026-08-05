@@ -69,5 +69,6 @@
     ]
   },
   "evaluation": "invoice",
-  "max_turns": 22
+  "max_turns": 22,
+  "suite": "original"
 }

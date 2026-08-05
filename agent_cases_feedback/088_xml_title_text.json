@@ -1,0 +1,26 @@
+{
+  "name": "xml_title_text",
+  "title": "XML Title Text",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "From book.xml, submit the text content of <title>.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "book.xml": [
+        "<book>",
+        "  <title>Hyperframes Guide</title>",
+        "  <author>N. Author</author>",
+        "</book>"
+      ]
+    },
+    "expected_submit": "Hyperframes Guide",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

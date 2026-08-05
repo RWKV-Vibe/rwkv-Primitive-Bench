@@ -1,0 +1,26 @@
+{
+  "name": "device_serial_owner",
+  "title": "Device Serial Owner",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "assets.csv: who owns serial SN-7781? Submit the owner email only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "assets.csv": [
+        "serial,model,owner_email",
+        "SN-7700,Laptop,a@co.com",
+        "SN-7781,Phone,b@co.com",
+        "SN-7782,Laptop,c@co.com"
+      ]
+    },
+    "expected_submit": "b@co.com",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

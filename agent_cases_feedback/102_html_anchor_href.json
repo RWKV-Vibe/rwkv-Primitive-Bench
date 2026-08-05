@@ -1,0 +1,24 @@
+{
+  "name": "html_anchor_href",
+  "title": "HTML Anchor Href",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "page.html has <a id=\"docs\" href=\"...\">. Submit the href value for id docs.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "page.html": [
+        "<a href=\"/home\">Home</a>",
+        "<a id=\"docs\" href=\"/docs/start\">Docs</a>"
+      ]
+    },
+    "expected_submit": "/docs/start",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_encoding"
+}

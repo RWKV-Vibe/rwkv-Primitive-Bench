@@ -1,0 +1,23 @@
+{
+  "name": "doi_prefix_suffix",
+  "title": "DOI Prefix Suffix",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "citation.txt has a DOI like 10.1000/182. Submit only the part after the slash.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "citation.txt": [
+        "doi:10.1000/182"
+      ]
+    },
+    "expected_submit": "182",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

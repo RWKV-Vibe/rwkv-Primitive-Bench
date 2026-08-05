@@ -1,0 +1,23 @@
+{
+  "name": "max_id_in_list",
+  "title": "Max ID In List",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "ids.txt has comma-separated integers. Submit the maximum integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "ids.txt": [
+        "3,1,2,8,5"
+      ]
+    },
+    "expected_submit": "8",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 8,
+  "suite": "fb_encoding"
+}

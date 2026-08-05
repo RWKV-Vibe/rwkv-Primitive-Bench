@@ -1,0 +1,27 @@
+{
+  "name": "error_code_message_bind",
+  "title": "Error Code Message Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "errors.ini maps codes to messages. What message text is for code E_TIMEOUT? Submit the message only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "errors.ini": [
+        "[messages]",
+        "E_NOT_FOUND=Resource missing",
+        "E_TIMEOUT=Upstream timed out",
+        "E_AUTH=Unauthorized",
+        "E_TIMEOUT_HINT=Retry later"
+      ]
+    },
+    "expected_submit": "Upstream timed out",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

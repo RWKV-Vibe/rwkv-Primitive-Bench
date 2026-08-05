@@ -1,0 +1,23 @@
+{
+  "name": "json_path_array_index",
+  "title": "JSON Path Array Index",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Read data.json. Submit the sku of the third item in the items array (1-based third = index 2).",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "data.json": [
+        "{\"items\":[{\"sku\":\"A1\"},{\"sku\":\"B2\"},{\"sku\":\"C3\"},{\"sku\":\"D4\"}]}"
+      ]
+    },
+    "expected_submit": "C3",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_multihop"
+}

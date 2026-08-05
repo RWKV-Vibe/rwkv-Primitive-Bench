@@ -33,5 +33,6 @@
     "scenario": "awk_tabs_justify"
   },
   "evaluation": "submit",
-  "max_turns": 16
+  "max_turns": 16,
+  "suite": "original"
 }

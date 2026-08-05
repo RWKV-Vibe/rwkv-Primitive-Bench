@@ -1,0 +1,23 @@
+{
+  "name": "csv_header_rename_map",
+  "title": "CSV Header Rename Map",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Using mapping.json, what is the canonical name for column cust_email? Submit the canonical name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "mapping.json": [
+        "{\"cust_email\":\"customer.email\",\"amt\":\"amount\",\"qty\":\"quantity\"}"
+      ]
+    },
+    "expected_submit": "customer.email",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

@@ -1,0 +1,30 @@
+{
+  "name": "bibtex_year_extract",
+  "title": "BibTeX Year Extract",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "refs.bib: submit the year of entry knuth84 as four digits.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "refs.bib": [
+        "@book{knuth84,",
+        "  author={Knuth},",
+        "  title={The TeXbook},",
+        "  year={1984}",
+        "}",
+        "@article{other,",
+        "  year={2020}",
+        "}"
+      ]
+    },
+    "expected_submit": "1984",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_encoding"
+}

@@ -1,0 +1,28 @@
+{
+  "name": "duplicate_key_last_wins",
+  "title": "Duplicate Key Last Wins",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "settings.env may repeat keys. Use the last PORT assignment. Submit that integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "settings.env": [
+        "HOST=0.0.0.0",
+        "PORT=8080",
+        "DEBUG=false",
+        "PORT=9090",
+        "NAME=app",
+        "PORT=7070"
+      ]
+    },
+    "expected_submit": "7070",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_multihop"
+}

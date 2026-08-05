@@ -1,0 +1,23 @@
+{
+  "name": "false_premise_version",
+  "title": "False Premise Version",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "package.json supposedly has dependency left-pad. What version is pinned? If not present, submit ABSENT.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "package.json": [
+        "{\"dependencies\":{\"lodash\":\"4.17.21\",\"react\":\"18.2.0\"}}"
+      ]
+    },
+    "expected_submit": "ABSENT",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_policy"
+}

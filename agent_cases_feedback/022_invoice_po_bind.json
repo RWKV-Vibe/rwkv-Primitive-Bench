@@ -1,0 +1,29 @@
+{
+  "name": "invoice_po_bind",
+  "title": "Invoice PO Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "Which purchase order number is linked to invoice INV-204? Submit the PO number only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "invoices.csv": [
+        "invoice_id,po_number,amount",
+        "INV-200,PO-88,100",
+        "INV-204,PO-91,250",
+        "INV-205,PO-91,10"
+      ],
+      "notes.txt": [
+        "PO-88 is older — not for INV-204."
+      ]
+    },
+    "expected_submit": "PO-91",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}

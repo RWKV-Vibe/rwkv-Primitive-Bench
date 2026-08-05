@@ -1,0 +1,26 @@
+{
+  "name": "systemd_restart_policy",
+  "title": "Systemd Restart Policy",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "app.service: what is Restart=? Submit the value.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "app.service": [
+        "[Service]",
+        "ExecStart=/usr/bin/app",
+        "Restart=on-failure",
+        "RestartSec=3"
+      ]
+    },
+    "expected_submit": "on-failure",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

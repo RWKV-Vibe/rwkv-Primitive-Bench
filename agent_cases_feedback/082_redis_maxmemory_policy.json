@@ -1,0 +1,25 @@
+{
+  "name": "redis_maxmemory_policy",
+  "title": "Redis Maxmemory Policy",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "redis.conf: what is maxmemory-policy? Submit the policy name.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "redis.conf": [
+        "maxmemory 256mb",
+        "maxmemory-policy allkeys-lru",
+        "timeout 0"
+      ]
+    },
+    "expected_submit": "allkeys-lru",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

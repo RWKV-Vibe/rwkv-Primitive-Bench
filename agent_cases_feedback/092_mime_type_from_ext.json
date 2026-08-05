@@ -1,0 +1,23 @@
+{
+  "name": "mime_type_from_ext",
+  "title": "MIME Type From Ext",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "mime.json maps extensions. What MIME type for .wasm? Submit the type string.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "mime.json": [
+        "{\".js\":\"text/javascript\",\".wasm\":\"application/wasm\",\".json\":\"application/json\"}"
+      ]
+    },
+    "expected_submit": "application/wasm",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_ops"
+}

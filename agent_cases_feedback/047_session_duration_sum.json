@@ -1,0 +1,25 @@
+{
+  "name": "session_duration_sum",
+  "title": "Sum Session Seconds",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "sessions.csv has a seconds column. Submit the sum of all seconds values as an integer.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "sessions.csv": [
+        "seconds",
+        "90",
+        "90"
+      ]
+    },
+    "expected_submit": "180",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 10,
+  "suite": "fb_multihop"
+}

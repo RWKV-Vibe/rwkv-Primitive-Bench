@@ -26,5 +26,6 @@
     "scenario": "read_only_repo_explain"
   },
   "evaluation": "repo_explain",
-  "max_turns": 12
+  "max_turns": 12,
+  "suite": "original"
 }

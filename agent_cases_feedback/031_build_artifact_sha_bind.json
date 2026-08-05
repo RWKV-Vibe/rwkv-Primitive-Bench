@@ -1,0 +1,27 @@
+{
+  "name": "build_artifact_sha_bind",
+  "title": "Build Artifact SHA Binding",
+  "mode": "benchmark",
+  "system": "base",
+  "prompt": "artifacts.json: what sha256 is recorded for artifact app-linux-amd64? Submit the hex digest only.",
+  "tools": "nav",
+  "environment": {
+    "kind": "emulated",
+    "files": {
+      "artifacts.json": [
+        "[",
+        "  {\"name\": \"app-darwin-arm64\", \"sha256\": \"aaa111\"},",
+        "  {\"name\": \"app-linux-amd64\", \"sha256\": \"bbb222\"},",
+        "  {\"name\": \"app-linux-arm64\", \"sha256\": \"ccc333\"}",
+        "]"
+      ]
+    },
+    "expected_submit": "bbb222",
+    "required_tools": [
+      "submit"
+    ]
+  },
+  "evaluation": "submit",
+  "max_turns": 12,
+  "suite": "fb_entity_bind"
+}
