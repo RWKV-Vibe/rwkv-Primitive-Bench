@@ -675,20 +675,91 @@ class EmulatedEnv:
         value = args.get(key, default)
         if not isinstance(value, str):
             return None, f"ERROR: {key} must be a string path"
-        # Emulated root aliases: models often invent /app/... absolute paths.
-        if value.startswith("/app/"):
-            value = value[len("/app/") :]
-        elif value == "/app":
-            value = "."
-        elif value.startswith("/") and not value.startswith("/app"):
+        coerced = self._coerce_virtual_path(value)
+        if coerced is None:
             return None, (
                 f"ERROR: unsafe path for {key}: absolute paths are not allowed. "
                 "Use a relative path from the emulated project root (example: src/answer.txt)."
             )
         try:
-            return self.norm_path(value), None
+            return self._drop_unknown_project_root(self.norm_path(coerced)), None
         except ValueError as exc:
             return None, f"ERROR: unsafe path for {key}: {exc}"
+
+    @staticmethod
+    def _coerce_virtual_path(value: str) -> str | None:
+        """Map common absolute/invented roots onto the emulated relative FS."""
+        raw = value.strip() or "."
+        # Known container / agent roots → relative.
+        prefixes = (
+            "/workspace/testbed/",
+            "/workspace/testbed",
+            "/workspace/dumps/workspace/",
+            "/workspace/dumps/workspace",
+            "/workspace/",
+            "/workspace",
+            "/app/",
+            "/app",
+            "/home/user/",
+            "/home/user",
+            "/testbed/",
+            "/testbed",
+        )
+        for prefix in prefixes:
+            if raw == prefix.rstrip("/") or raw == prefix:
+                return "."
+            if raw.startswith(prefix if prefix.endswith("/") else prefix + "/"):
+                cut = prefix if prefix.endswith("/") else prefix + "/"
+                return raw[len(cut) :] or "."
+        if raw.startswith("/"):
+            rest = raw.lstrip("/")
+            first = rest.split("/", 1)[0]
+            # Reject classic host filesystem roots; keep soft absolutes like /app.conf or /src/...
+            if first in {
+                "etc",
+                "usr",
+                "var",
+                "bin",
+                "sbin",
+                "lib",
+                "lib64",
+                "System",
+                "Users",
+                "private",
+                "dev",
+                "proc",
+                "sys",
+                "tmp",
+                "root",
+                "opt",
+                "mnt",
+                "media",
+            }:
+                return None
+            if rest and ".." not in rest.split("/"):
+                return rest
+            return None
+        return raw
+
+    def _drop_unknown_project_root(self, path: str) -> str:
+        """Peel invented leading dirs until a known file/dir prefix remains."""
+        if path in {"", "."}:
+            return "."
+        if path in self.files:
+            return path
+        # Directory listing prefixes that match real files.
+        if any(name.startswith(path.rstrip("/") + "/") for name in self.files):
+            return path
+        parts = path.split("/")
+        while len(parts) > 1:
+            parts = parts[1:]
+            candidate = "/".join(parts)
+            if candidate in self.files:
+                return candidate
+            if any(name.startswith(candidate.rstrip("/") + "/") for name in self.files):
+                return candidate
+        # Keep bare filename even if not yet present (write_file create).
+        return parts[0] if parts else path
 
     def call(self, name: str, args: Json) -> str:
         # Protocol alias only: map shell wrappers onto real tools. Never invent answers.
@@ -1043,10 +1114,29 @@ class EmulatedEnv:
         return "x" in mode or mode in {"755", "775", "777"}
 
     def multiply(self, args: Json) -> str:
+        def _as_int(value: Any, name: str) -> int:
+            if isinstance(value, bool):
+                raise ValueError(name)
+            if isinstance(value, int):
+                return value
+            if isinstance(value, float) and value.is_integer():
+                return int(value)
+            if isinstance(value, str) and value.strip():
+                return int(float(value.strip()))
+            # Schema-like stubs {"type":"integer"} are not numbers.
+            if isinstance(value, dict) and "type" in value and "a" not in str(value).lower():
+                raise ValueError(f"schema:{name}")
+            raise ValueError(name)
+
         try:
-            a = int(args["a"])
-            b = int(args["b"])
-        except Exception:
+            a = _as_int(args.get("a"), "a")
+            b = _as_int(args.get("b"), "b")
+        except Exception as exc:
+            if "schema" in str(exc):
+                return (
+                    "ERROR: multiply needs concrete integers, not JSON-schema stubs. "
+                    'Example: {"a":4827,"b":391}'
+                )
             return "ERROR: multiply requires integer arguments a and b"
         return str(a * b)
 
@@ -1055,9 +1145,13 @@ class EmulatedEnv:
         if error:
             return error
         assert path is not None
+        if path in self.files:
+            return f"path is a file (use read_file): {path}"
         prefix = "" if path in {"", "."} else path.rstrip("/") + "/"
         files = [name for name in sorted(self.files) if not prefix or name.startswith(prefix)]
         if not files:
+            if path not in {"", "."}:
+                return f"(no files under {path!r}; try list_files with path \".\")"
             return "(no files)"
         return "\n".join(files)
 
@@ -1066,6 +1160,8 @@ class EmulatedEnv:
         if error:
             return error
         assert path is not None
+        if path in self.files:
+            return f"path is a file (use read_file / stat): {path}"
         prefix = "" if path in {"", "."} else path.rstrip("/") + "/"
         files = [name for name in sorted(self.files) if not prefix or name.startswith(prefix)]
         if not files:
@@ -1251,13 +1347,75 @@ class EmulatedEnv:
         ):
             return (
                 "ERROR: run_lua executes Lua only, not Python. "
-                "Rewrite in Lua using FILES['path'] / io.open and print(...). "
+                "Rewrite in Lua using FILES['path'] / io.lines('path') and print(...). "
                 "Example: local t=0; for q in FILES['x.csv']:gmatch(',(%d+)') do t=t+tonumber(q) end; print(t)"
             )
+        if re.search(r"\blocal\s+FILES\b", code):
+            code = re.sub(r"\blocal\s+FILES\b", "local CFG", code)
+            code = re.sub(r"\bFILES\.", "CFG.", code)
         wrapper = f"""
 local FILES = {lua_table_literal(self.files)}
+local _real_io_open = io.open
+local function _files_open(path, mode)
+  mode = mode or "r"
+  if FILES[path] ~= nil and (mode == "r" or mode == "rb") then
+    local content = FILES[path]
+    local i = 1
+    local fake = {{}}
+    function fake:read(fmt)
+      if i > #content then return nil end
+      if fmt == "*a" or fmt == "*all" then
+        local out = content:sub(i)
+        i = #content + 1
+        return out
+      end
+      local nl = content:find("\\n", i, true)
+      local line
+      if not nl then
+        line = content:sub(i)
+        i = #content + 1
+        if line == "" then return nil end
+        return line
+      end
+      line = content:sub(i, nl - 1)
+      i = nl + 1
+      return line
+    end
+    function fake:lines()
+      return function()
+        return self:read("*l")
+      end
+    end
+    function fake:close()
+      return true
+    end
+    return fake
+  end
+  return _real_io_open(path, mode)
+end
+local function _files_lines(path)
+  local f = _files_open(path, "r")
+  if not f then
+    return function() return nil end
+  end
+  return f:lines()
+end
+local function read_file(path, line_no)
+  local content = FILES[path]
+  if content == nil then return nil end
+  if line_no == nil then return content end
+  local n = 0
+  for line in (content .. "\\n"):gmatch("(.-)\\n") do
+    n = n + 1
+    if n == tonumber(line_no) then
+      return line
+    end
+  end
+  return nil
+end
 local env = {{
   FILES = FILES,
+  read_file = read_file,
   assert = assert,
   error = error,
   ipairs = ipairs,
@@ -1270,7 +1428,7 @@ local env = {{
   tostring = tostring,
   type = type,
   xpcall = xpcall,
-  io = io,
+  io = {{ open = _files_open, lines = _files_lines, write = io.write, stderr = io.stderr, stdout = io.stdout }},
   math = math,
   string = string,
   table = table,
