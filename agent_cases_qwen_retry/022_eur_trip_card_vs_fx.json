@@ -3,7 +3,7 @@
   "title": "EUR Trip Card Versus FX",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Follow rate_guide.md: first form gross = EUR amount * EUR spot_sell, then apply the wallet/card multipliers. FILES['...'] are strings (gmatch), not tables. Submit one line: EUR by N.NN or CARD by N.NN",
+  "prompt": "I left trip_budget.csv, bot_rates.tsv, card_terms.txt, and rate_guide.md here. Which is cheaper for the EUR trip — wallet or card — and by how much?",
   "tools": "nav",
   "environment": {
     "kind": "emulated",

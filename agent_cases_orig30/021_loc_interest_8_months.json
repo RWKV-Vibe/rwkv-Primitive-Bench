@@ -3,7 +3,7 @@
   "title": "Line Of Credit Interest Estimate",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Compute total LOC interest for every row in balance_schedule.csv using loan_terms.txt. Report the summed interest rounded to 2 decimals (not a balance).",
+  "prompt": "Read loan_terms.txt and balance_schedule.csv. Compute total LOC interest for every schedule row using the formula in loan_terms.txt. Report the summed interest rounded to 2 decimals (not a balance).",
   "tools": "nav",
   "environment": {
     "kind": "emulated",

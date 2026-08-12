@@ -3,7 +3,7 @@
   "title": "Tabs To Aligned Columns",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "align.awk should format data.tsv into aligned columns, but the body still uses print. Follow README.md exactly, run it on data.tsv, and report the formatted stdout.",
+  "prompt": "align.awk still uses print. README.md gives the exact replacement printf line — copy that line into align.awk unchanged (left-justify / field widths are part of the spec). write_file, run_awk on data.tsv, submit the stdout.",
   "tools": "awk",
   "environment": {
     "kind": "emulated",

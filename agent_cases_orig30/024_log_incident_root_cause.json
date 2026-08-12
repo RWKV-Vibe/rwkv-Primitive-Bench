@@ -3,7 +3,7 @@
   "title": "Log Incident Root Cause",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Read deploy.log, app.log, and worker.log once each. After the deploy marker time, take the earliest ERROR that has request_id and report: <service> <CODE> <request_id>.",
+  "prompt": "Read deploy.log, app.log, and worker.log once each (prefer reading over long scripts). After the deploy marker timestamp, choose the earliest ERROR that includes request_id across those files. Submit: <service> <CODE> <request_id>.",
   "tools": "nav",
   "environment": {
     "kind": "emulated",

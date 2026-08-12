@@ -3,7 +3,7 @@
   "title": "BOT FX Column Trap",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Using orders.csv, bot_rates.tsv, and rate_guide.md, what is our net TWD outflow? Report the number rounded to two decimals.",
+  "prompt": "Read rate_guide.md for the buy_*/sell_* → column map and README.md for FILES usage. Lua patterns use %d (not \\d). Compute net TWD outflow to two decimals.",
   "tools": "nav",
   "environment": {
     "kind": "emulated",

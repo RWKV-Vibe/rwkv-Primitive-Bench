@@ -71,8 +71,8 @@ python3 primitive_bench.py \
   --temperature 0 \
   --top-k 50 \
   --top-p 1.0 \
-  --alpha-presence 1.0 \
-  --alpha-frequency 0.1 \
+  --alpha-presence 0 \
+  --alpha-frequency 0 \
   --alpha-decay 0.99
 ```
 

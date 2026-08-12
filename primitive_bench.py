@@ -14,6 +14,7 @@ import ctypes
 import datetime as _dt
 import errno
 import html
+import http.client
 import importlib.util
 import json
 import os
@@ -26,6 +27,7 @@ import time
 import traceback
 import types
 import urllib.error
+import urllib.parse
 import urllib.request
 from dataclasses import dataclass, field
 from pathlib import Path
@@ -242,20 +244,39 @@ def lua_table_literal(values: dict[str, str]) -> str:
 
 
 class OpenAIClient:
-    def __init__(self, base_url: str, model: str, timeout: float) -> None:
+    def __init__(self, base_url: str, model: str, timeout: float, api_key: str | None = None) -> None:
         self.base_url = base_url.rstrip("/")
         self.root_url = self.base_url.removesuffix("/v1")
         self.model = model
         self.timeout = timeout
+        self.api_key = api_key
+
+    def _headers(self) -> dict[str, str]:
+        headers = {"Content-Type": "application/json"}
+        if self.api_key:
+            headers["Authorization"] = f"Bearer {self.api_key}"
+        return headers
+
+    def _is_qwen(self) -> bool:
+        return "qwen" in self.model.lower()
 
     def chat(self, payload: Json) -> Json:
         body = dict(payload)
         body.setdefault("model", self.model)
+        # Qwen official OpenAI-compat path (vLLM/SGLang/SiliconFlow): Hermes tools +
+        # chat_template_kwargs.enable_thinking. See Qwen function-calling docs.
+        if self._is_qwen():
+            body.setdefault("enable_thinking", False)
+            body.setdefault(
+                "chat_template_kwargs",
+                {"enable_thinking": False},
+            )
+            body.setdefault("repetition_penalty", 1.05)
         data = json.dumps(body).encode("utf-8")
         req = urllib.request.Request(
             f"{self.base_url}/chat/completions",
             data=data,
-            headers={"Content-Type": "application/json"},
+            headers=self._headers(),
             method="POST",
         )
         try:
@@ -272,7 +293,7 @@ class OpenAIClient:
         req = urllib.request.Request(
             f"{self.root_url}/completion",
             data=data,
-            headers={"Content-Type": "application/json"},
+            headers=self._headers(),
             method="POST",
         )
         try:
@@ -283,6 +304,32 @@ class OpenAIClient:
             raise RuntimeError(f"HTTP {exc.code}: {error_body}") from exc
 
 
+def normalize_assistant_message(message: Json) -> Json:
+    """Keep the OpenAI/Hermes fields Qwen templates expect; drop null noise."""
+    out: Json = {"role": "assistant"}
+    if message.get("content") is not None:
+        out["content"] = message.get("content")
+    else:
+        out["content"] = ""
+    if message.get("tool_calls"):
+        out["tool_calls"] = message["tool_calls"]
+    # Qwen think mode may return reasoning_content; preserve when present.
+    if message.get("reasoning_content"):
+        out["reasoning_content"] = message["reasoning_content"]
+    return out
+
+
+def qwen_system_addon() -> str:
+    """Hermes-style closing rules aligned with Qwen function-calling docs (no answer leak)."""
+    return (
+        "You are a helpful assistant with access to function tools. "
+        "When a tool is needed, call it via the API tool interface (do not invent tool XML in plain text). "
+        "After tools return, continue until the task is finished. "
+        "The graded final answer MUST be delivered by calling the submit tool; "
+        "a plain-text final reply is not scored."
+    )
+
+
 @dataclass
 class PendingBatchCompletion:
     payload: Json
@@ -291,12 +338,81 @@ class PendingBatchCompletion:
     error: BaseException | None = None
 
 
+# rwkv_lightning_cuda stop_tokens are integer IDs (not strings). Prefer distinctive
+# multi-char pieces so we do not stop on bare '<' / '>' / ':' / '\\n'.
+#
+# CRITICAL: never map <tool_call> / **Tool Call:** onto the bare word tokens
+# "tool" / "call" / "Tool" / "Call". CUDA stops on *any* listed id, so those
+# fire mid-JSON on paths like tool.py (case 005 truncated at "path\":\"").
+# XML/markdown tool markers have no safe single-token stand-in here — rely on
+# ``` / \\n\\n / User / EOS; the runner still parses a full <tool_call> block if
+# the model emits one before those stops.
+_RWKV_STOP_STRING_TOKEN_IDS: dict[str, list[int]] = {
+    "<tool_call>": [],
+    "</tool_call>": [],
+    "<tool_calls>": [],
+    "</tool_calls>": [],
+    "**Tool Call:**": [],
+    "**Tool Calls:**": [],
+    "\n```": [6884],  # ```
+    "```": [6884],
+    "\n\nUser:": [261, 24281],  # \n\n, User  (matches CUDA default style)
+    "\nUser:": [24281],
+    "\n\nUser: Function output:": [261, 24281, 55049, 46731],
+    "\n\n": [261],
+    "</s>": [0],
+    "</think>": [],  # no safe single-id map; do not fall through to User stops
+}
+
+
+def detect_rwkv_backend(base_url: str, timeout: float = 10.0) -> str:
+    """Return backend kind from GET /v1/models owned_by (cuda vs pytorch)."""
+    url = base_url.rstrip("/").removesuffix("/v1") + "/v1/models"
+    try:
+        with urllib.request.urlopen(url, timeout=timeout) as resp:
+            payload = json.loads(resp.read().decode("utf-8"))
+    except Exception:
+        return "rwkv_lightning"
+    owned = " ".join(
+        str(item.get("owned_by") or "")
+        for item in (payload.get("data") or [])
+        if isinstance(item, dict)
+    ).lower()
+    if "cuda" in owned:
+        return "rwkv_lightning_cuda"
+    return "rwkv_lightning"
+
+
+def stop_strings_to_cuda_token_ids(stops: list[str]) -> list[int]:
+    ids: list[int] = [0]  # EOS / document end; do not place before tool_call text
+    for stop in stops:
+        if not isinstance(stop, str) or not stop:
+            continue
+        if stop in _RWKV_STOP_STRING_TOKEN_IDS:
+            ids.extend(_RWKV_STOP_STRING_TOKEN_IDS[stop])
+            continue
+        # Unknown stop string: keep CUDA defaults approximating \\n\\nUser:
+        ids.extend([261, 24281])
+    # unique, stable order
+    seen: set[int] = set()
+    out: list[int] = []
+    for token_id in ids:
+        if token_id not in seen:
+            seen.add(token_id)
+            out.append(token_id)
+    return out
+
+
 class SynchronousBatchClient:
-    """Adapt synchronous ``complete`` calls to rwkv_lightning's contents API.
+    """Adapt synchronous ``complete`` calls to rwkv_lightning batch APIs.
 
     Benchmark tasks still run independently in worker threads. Calls which reach
     the model within ``batch_wait`` seconds and use identical decode settings are
     combined into one request, then demultiplexed by ``choices[].index``.
+
+    Backend differences (see Alic-Li/rwkv_lightning_cuda docs):
+    - rwkv_lightning (PyTorch): POST /v1/chat/completions with string stop_tokens
+    - rwkv_lightning_cuda: POST /v1/batch/completions with integer stop_tokens
     """
 
     TOOL_TRIGGER_STOPS = {
@@ -326,6 +442,7 @@ class SynchronousBatchClient:
         alpha_decay: float,
         chunk_size: int,
         batch_wait: float,
+        backend: str | None = None,
     ) -> None:
         self.base_url = base_url.rstrip("/")
         self.model = model
@@ -337,11 +454,16 @@ class SynchronousBatchClient:
         self.alpha_decay = alpha_decay
         self.chunk_size = chunk_size
         self.batch_wait = batch_wait
+        self.backend = backend or detect_rwkv_backend(self.base_url, timeout=min(timeout, 10.0))
         self._condition = threading.Condition()
         self._pending: list[PendingBatchCompletion] = []
         self._closed = False
         self._worker = threading.Thread(target=self._batch_loop, name="rwkv-batch-client", daemon=True)
         self._worker.start()
+
+    @property
+    def is_cuda_backend(self) -> bool:
+        return "cuda" in self.backend.lower()
 
     def chat(self, payload: Json) -> Json:
         raise RuntimeError("the synchronous contents API supports continuation prompts, not OpenAI messages")
@@ -358,9 +480,14 @@ class SynchronousBatchClient:
                 closer = self.TOOL_TRIGGER_CLOSERS[trigger]
                 if closer not in stops:
                     stops.insert(0, closer)
+        stop_tokens: list[Any]
+        if self.is_cuda_backend:
+            stop_tokens = stop_strings_to_cuda_token_ids([str(s) for s in stops])
+        else:
+            stop_tokens = stops
         return {
             "max_tokens": int(payload.get("n_predict", payload.get("max_tokens", 4096))),
-            "stop_tokens": stops,
+            "stop_tokens": stop_tokens,
             # rwkv_lightning rejects zero, while the legacy completion runner
             # deliberately uses 0.0 for deterministic tool-argument turns.
             "temperature": max(
@@ -432,33 +559,75 @@ class SynchronousBatchClient:
         message = choice.get("message") or {}
         return str(delta.get("content") or message.get("content") or choice.get("text") or "")
 
+    def _batch_endpoint(self) -> str:
+        if self.is_cuda_backend:
+            return f"{self.base_url}/batch/completions"
+        return f"{self.base_url}/chat/completions"
+
     def _post_batch(self, batch: list[PendingBatchCompletion]) -> list[Json]:
         body = self._request_settings(batch[0].payload)
         body["contents"] = [str(item.payload["prompt"]) for item in batch]
         data = json.dumps(body, ensure_ascii=False).encode("utf-8")
-        req = urllib.request.Request(
-            f"{self.base_url}/chat/completions",
-            data=data,
-            headers={"Content-Type": "application/json"},
-            method="POST",
-        )
+        headers = {"Content-Type": "application/json"}
+        if self.password:
+            headers["Authorization"] = f"Bearer {self.password}"
         outputs = [""] * len(batch)
+        endpoint = self._batch_endpoint()
         try:
-            with urllib.request.urlopen(req, timeout=self.timeout) as resp:
-                for raw_line in resp:
-                    line = raw_line.decode("utf-8", errors="replace").strip()
-                    if not line or line.startswith(":"):
-                        continue
-                    if line.startswith("data:"):
-                        line = line[5:].strip()
-                    if line == "[DONE]":
-                        break
-                    chunk = json.loads(line)
-                    for choice in chunk.get("choices") or []:
-                        index = int(choice.get("index", 0))
-                        if not 0 <= index < len(outputs):
-                            raise RuntimeError(f"batch API returned out-of-range choice index {index}")
-                        outputs[index] += self._choice_text(choice)
+            if self.is_cuda_backend:
+                # Drogon CUDA SSE often returns empty bodies via urllib; use http.client.
+                parsed = urllib.parse.urlparse(endpoint)
+                conn_cls = http.client.HTTPSConnection if parsed.scheme == "https" else http.client.HTTPConnection
+                conn = conn_cls(
+                    parsed.hostname,
+                    parsed.port or (443 if parsed.scheme == "https" else 80),
+                    timeout=self.timeout,
+                )
+                try:
+                    path = parsed.path or "/"
+                    if parsed.query:
+                        path = f"{path}?{parsed.query}"
+                    conn.request("POST", path, body=data, headers=headers)
+                    resp = conn.getresponse()
+                    if resp.status >= 400:
+                        error_body = resp.read().decode("utf-8", errors="replace")
+                        raise RuntimeError(f"HTTP {resp.status}: {error_body}")
+                    while True:
+                        raw_line = resp.readline()
+                        if not raw_line:
+                            break
+                        line = raw_line.decode("utf-8", errors="replace").strip()
+                        if not line or line.startswith(":"):
+                            continue
+                        if line.startswith("data:"):
+                            line = line[5:].strip()
+                        if line == "[DONE]":
+                            break
+                        chunk = json.loads(line)
+                        for choice in chunk.get("choices") or []:
+                            index = int(choice.get("index", 0))
+                            if not 0 <= index < len(outputs):
+                                raise RuntimeError(f"batch API returned out-of-range choice index {index}")
+                            outputs[index] += self._choice_text(choice)
+                finally:
+                    conn.close()
+            else:
+                req = urllib.request.Request(endpoint, data=data, headers=headers, method="POST")
+                with urllib.request.urlopen(req, timeout=self.timeout) as resp:
+                    for raw_line in resp:
+                        line = raw_line.decode("utf-8", errors="replace").strip()
+                        if not line or line.startswith(":"):
+                            continue
+                        if line.startswith("data:"):
+                            line = line[5:].strip()
+                        if line == "[DONE]":
+                            break
+                        chunk = json.loads(line)
+                        for choice in chunk.get("choices") or []:
+                            index = int(choice.get("index", 0))
+                            if not 0 <= index < len(outputs):
+                                raise RuntimeError(f"batch API returned out-of-range choice index {index}")
+                            outputs[index] += self._choice_text(choice)
         except urllib.error.HTTPError as exc:
             error_body = exc.read().decode("utf-8", errors="replace")
             raise RuntimeError(f"HTTP {exc.code}: {error_body}") from exc
@@ -1225,9 +1394,38 @@ class EmulatedEnv:
                 "ERROR: write_file requires string content, or a JSON array of line strings. "
                 'Example: {"path":"app.py","content":["def inc(x):","    return x + 1"]}'
             )
+        # Models often paste read_file output ("N: text") back into write_file.
+        # Strip those line-number prefixes only — never invent file contents.
+        content = self._strip_read_file_line_prefixes(content)
         self.files[path] = content
         self.modes.setdefault(path, "rw-")
         return f"ok: wrote {path} ({len(content.splitlines())} lines)"
+
+    @staticmethod
+    def _strip_read_file_line_prefixes(content: str) -> str:
+        lines = content.splitlines(keepends=True)
+        if not lines:
+            return content
+        numbered = 0
+        stripped: list[str] = []
+        for line in lines:
+            newline = ""
+            body = line
+            if body.endswith("\r\n"):
+                newline = "\r\n"
+                body = body[:-2]
+            elif body.endswith("\n"):
+                newline = "\n"
+                body = body[:-1]
+            match = re.match(r"^(\d+):\s(.*)$", body)
+            if match:
+                numbered += 1
+                stripped.append(match.group(2) + newline)
+            else:
+                stripped.append(line)
+        if numbered >= max(1, (len(lines) + 1) // 2):
+            return "".join(stripped)
+        return content
 
     def chmod(self, args: Json) -> str:
         path, error = self.path_arg(args, "path")
@@ -1400,10 +1598,7 @@ local function _files_lines(path)
   end
   return f:lines()
 end
-local function read_file(path, line_no)
-  local content = FILES[path]
-  if content == nil then return nil end
-  if line_no == nil then return content end
+local function _nth_line(content, line_no)
   local n = 0
   for line in (content .. "\\n"):gmatch("(.-)\\n") do
     n = n + 1
@@ -1413,9 +1608,169 @@ local function read_file(path, line_no)
   end
   return nil
 end
+local function read_file(path, line_no)
+  local content = FILES[path]
+  if content == nil then return nil end
+  if line_no ~= nil then
+    return _nth_line(content, line_no)
+  end
+  -- Support both read_file(path) string use and read_file(path):read_line(n).
+  local helper = {{
+    read_line = function(_, n)
+      return _nth_line(content, n)
+    end,
+  }}
+  setmetatable(helper, {{
+    __tostring = function() return content end,
+    __len = function() return #content end,
+    __concat = function(a, b) return tostring(a) .. tostring(b) end,
+    __index = function(_, key)
+      local fn = string[key]
+      if type(fn) == "function" then
+        return function(_, ...)
+          return fn(content, ...)
+        end
+      end
+      return nil
+    end,
+  }})
+  return helper
+end
+-- Minimal json.decode for flat objects/arrays (agent common case). Not a full RFC parser.
+local json = {{}}
+function json.decode(s)
+  if type(s) ~= "string" then error("json.decode expects a string") end
+  local i = 1
+  local function peek() return s:sub(i, i) end
+  local function get()
+    local c = s:sub(i, i)
+    i = i + 1
+    return c
+  end
+  local function skip()
+    while true do
+      local c = peek()
+      if c == " " or c == "\\t" or c == "\\n" or c == "\\r" then get() else break end
+    end
+  end
+  local parse_value
+  local function parse_string()
+    if get() ~= '"' then error("json string expected") end
+    local out = {{}}
+    while true do
+      local c = get()
+      if c == "" then error("unterminated json string") end
+      if c == '"' then break end
+      if c == "\\\\" then
+        local e = get()
+        if e == '"' or e == "\\\\" or e == "/" then out[#out+1] = e
+        elseif e == "n" then out[#out+1] = "\\n"
+        elseif e == "t" then out[#out+1] = "\\t"
+        elseif e == "r" then out[#out+1] = "\\r"
+        elseif e == "b" then out[#out+1] = "\\b"
+        elseif e == "f" then out[#out+1] = "\\f"
+        else error("bad json escape") end
+      else
+        out[#out+1] = c
+      end
+    end
+    return table.concat(out)
+  end
+  local function parse_number()
+    local start = i
+    if peek() == "-" then get() end
+    while peek():match("%d") do get() end
+    if peek() == "." then
+      get()
+      while peek():match("%d") do get() end
+    end
+    if peek() == "e" or peek() == "E" then
+      get()
+      if peek() == "+" or peek() == "-" then get() end
+      while peek():match("%d") do get() end
+    end
+    return tonumber(s:sub(start, i - 1))
+  end
+  local function parse_array()
+    get() -- [
+    local arr = {{}}
+    skip()
+    if peek() == "]" then get(); return arr end
+    while true do
+      arr[#arr+1] = parse_value()
+      skip()
+      local c = peek()
+      if c == "]" then get(); return arr end
+      if c ~= "," then error("expected , or ]") end
+      get(); skip()
+    end
+  end
+  local function parse_object()
+    get() -- {{
+    local obj = {{}}
+    skip()
+    if peek() == "}}" then get(); return obj end
+    while true do
+      skip()
+      local key = parse_string()
+      skip()
+      if get() ~= ":" then error("expected :") end
+      skip()
+      obj[key] = parse_value()
+      skip()
+      local c = peek()
+      if c == "}}" then get(); return obj end
+      if c ~= "," then error("expected , or }}") end
+      get()
+    end
+  end
+  parse_value = function()
+    skip()
+    local c = peek()
+    if c == '"' then return parse_string() end
+    if c == "{{" then return parse_object() end
+    if c == "[" then return parse_array() end
+    if c == "-" or c:match("%d") then return parse_number() end
+    if s:sub(i, i+3) == "true" then i = i + 4; return true end
+    if s:sub(i, i+4) == "false" then i = i + 5; return false end
+    if s:sub(i, i+3) == "null" then i = i + 4; return nil end
+    error("unexpected json at " .. i)
+  end
+  local value = parse_value()
+  skip()
+  if i <= #s then error("trailing junk in json") end
+  return value
+end
+if not string.split then
+  function string.split(str, sep)
+    sep = sep or "%s"
+    local out = {{}}
+    if sep == "" then error("empty separator") end
+    local plain = (#sep == 1)
+    local pattern = plain and ("([^" .. sep:gsub("(%W)", "%%%1") .. "]+)") or ("([^" .. sep .. "]+)")
+    if plain then
+      local start = 1
+      while true do
+        local a, b = str:find(sep, start, true)
+        if not a then
+          out[#out+1] = str:sub(start)
+          break
+        end
+        out[#out+1] = str:sub(start, a - 1)
+        start = b + 1
+      end
+    else
+      for part in str:gmatch("([^" .. sep .. "]+)") do
+        out[#out+1] = part
+      end
+    end
+    return out
+  end
+end
 local env = {{
   FILES = FILES,
   read_file = read_file,
+  json = json,
   assert = assert,
   error = error,
   ipairs = ipairs,
@@ -1474,7 +1829,7 @@ end
         if len(output) > 4000:
             output = output[:4000] + "\n... truncated ..."
         if completed.returncode != 0 and not output.startswith("ERROR:"):
-            return f"ERROR: lua exited with status {completed.returncode}\n{output}".strip()
+            output = f"ERROR: lua exited with status {completed.returncode}\n{output}".strip()
         self.last_run_output = output
         return output or "ok: lua completed with no output"
 
@@ -1777,7 +2132,7 @@ RUN_AWK_TOOL = tool_schema(
 
 RUN_LUA_TOOL = tool_schema(
     "run_lua",
-        "Run host Lua for calculation. Prefer FILES['file.csv'] string + gmatch; print(...). Round with string.format('%.2f', x) (no math.round).",
+    "Run host Lua for calculation. Prefer FILES['file.csv'] string + gmatch; print(...). Round with string.format('%.2f', x) (no math.round).",
     {
         "code": {
             "type": "string",
@@ -3754,17 +4109,21 @@ def run_task_chat(
 ) -> TaskResult:
     env = task.make_env()
     max_turns = max_turns_override or task.max_turns
+    system = task.system
+    if client._is_qwen():
+        system = f"{qwen_system_addon()}\n\n{task.system}"
     messages: list[Json] = [
-        {"role": "system", "content": task.system},
+        {"role": "system", "content": system},
         {"role": "user", "content": task.prompt},
     ]
     events: list[Event] = [
-        Event(kind="system", title="System", body=task.system),
+        Event(kind="system", title="System", body=system),
         Event(kind="user", title="User", body=task.prompt),
     ]
     final_answer = ""
     tool_call_count = 0
     turns_used = 0
+    submit_nudge_used = False
 
     for turn in range(1, max_turns + 1):
         turns_used = turn
@@ -3799,6 +4158,7 @@ def run_task_chat(
             add_evaluator_note(events, "API response did not contain choices[0].message", turn=turn, raw=response)
             break
 
+        message = normalize_assistant_message(message)
         messages.append(message)
 
         content = message.get("content") or ""
@@ -3807,6 +4167,27 @@ def run_task_chat(
         add_assistant_display_events(events, content, message, turn)
 
         if not tool_calls:
+            needs_submit = bool(env.required_tools) and "submit" in env.required_tools
+            if (
+                client._is_qwen()
+                and needs_submit
+                and env.submitted is None
+                and not submit_nudge_used
+                and turn < max_turns
+            ):
+                submit_nudge_used = True
+                nudge = (
+                    "Do not answer in plain text. Call the submit tool now with your final answer "
+                    'as {"answer": "..."}.'
+                )
+                messages.append({"role": "user", "content": nudge})
+                events.append(Event(kind="user", title="User", body=nudge, turn=turn))
+                add_evaluator_note(
+                    events,
+                    "Plain-text stop without submit; issued one Hermes-style submit reminder.",
+                    turn=turn,
+                )
+                continue
             final_answer = content
             if not content.strip():
                 add_evaluator_note(events, "Assistant returned no content and no tool calls.", turn=turn, raw=message)
@@ -4928,8 +5309,10 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     parser.add_argument("--n-parallel", type=int, default=1, help="Number of benchmark tasks to run concurrently")
     parser.add_argument("--password", default="rwkv7_7.2b", help="Password sent to the synchronous contents API; use an empty value for none")
     parser.add_argument("--top-k", type=int, default=50, help="Top-k sampling for the synchronous contents API")
-    parser.add_argument("--alpha-presence", type=float, default=1.0, help="RWKV presence penalty for the synchronous contents API")
-    parser.add_argument("--alpha-frequency", type=float, default=0.1, help="RWKV frequency penalty for the synchronous contents API")
+    # BlinkDL: function-call sampling should not use presence/frequency penalty
+    # (Primitive Bench previously defaulted to 1.0/0.1 — that was wrong).
+    parser.add_argument("--alpha-presence", type=float, default=0.0, help="RWKV presence penalty for the synchronous contents API (default 0; do not enable for tool calling)")
+    parser.add_argument("--alpha-frequency", type=float, default=0.0, help="RWKV frequency penalty for the synchronous contents API (default 0; do not enable for tool calling)")
     parser.add_argument("--alpha-decay", type=float, default=0.99, help="RWKV penalty decay for the synchronous contents API")
     parser.add_argument("--chunk-size", type=int, default=4, help="Streaming chunk size for the synchronous contents API")
     parser.add_argument("--batch-wait-ms", type=float, default=10.0, help="Window for coalescing concurrent prompt calls into one contents request")
@@ -5057,8 +5440,10 @@ def main(argv: list[str]) -> int:
             chunk_size=args.chunk_size,
             batch_wait=max(0.0, args.batch_wait_ms / 1000.0),
         )
+        print(f"rwkv backend: {client.backend}", flush=True)
     else:
-        client = OpenAIClient(args.base_url, args.model, args.timeout)
+        # For OpenAI-compatible hosts (SiliconFlow, etc.), --password is the Bearer API key.
+        client = OpenAIClient(args.base_url, args.model, args.timeout, api_key=args.password or None)
     completion_tool_format = resolve_completion_tool_format(args.model, args.completion_tool_format)
     run_meta = {
         "base_url": args.base_url,
@@ -5076,6 +5461,7 @@ def main(argv: list[str]) -> int:
         "alpha_presence": args.alpha_presence,
         "alpha_frequency": args.alpha_frequency,
         "alpha_decay": args.alpha_decay,
+        "rwkv_backend": getattr(client, "backend", None),
         "chunk_size": args.chunk_size,
         "batch_wait_ms": args.batch_wait_ms,
         "landlock": landlock_status,

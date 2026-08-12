@@ -3,7 +3,7 @@
   "title": "CSV Reconcile Returns",
   "mode": "benchmark",
   "system": "base",
-  "prompt": "Reconcile orders.csv against refunds.csv. Which SKU has the largest net? Report like: SKU-42 99.50 (real numbers, no placeholders).",
+  "prompt": "Per README.md: net(sku) = sum(qty*unit_price over all orders rows) minus sum(refund amounts). Do not skip order rows or forget refunds. Submit the top sku as: SKU-XX N.NN",
   "tools": "nav",
   "environment": {
     "kind": "emulated",

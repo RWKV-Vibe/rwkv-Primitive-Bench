@@ -448,11 +448,12 @@ class SynchronousBatchClientTests(unittest.TestCase):
             10,
             password="secret",
             top_k=50,
-            alpha_presence=1.0,
-            alpha_frequency=0.1,
+            alpha_presence=0.0,
+            alpha_frequency=0.0,
             alpha_decay=0.99,
             chunk_size=4,
             batch_wait=0.05,
+            backend="rwkv_lightning",
         )
         barrier = threading.Barrier(2)
 
